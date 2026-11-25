@@ -1,0 +1,2076 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FIREFIGHTERS 2035 — Quand le courage humain rencontre l'intelligence artificielle</title>
+<meta name="description" content="Documentaire interactif : le métier de sapeur-pompier, les leçons de Lahaina et du Camp Fire, et une vision réaliste de l'IA au service des secours en 2035.">
+<meta name="theme-color" content="#08090B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --noir:#08090B; --charbon:#111318; --feu:#FF5A1F; --incan:#FF8C42; --alerte:#E53935;
+  --fumee:#F1F1EF; --acier:#858B94; --line:rgba(241,241,239,.12); --line2:rgba(241,241,239,.22);
+  --disp:'Big Shoulders Display', 'Arial Narrow', Impact, sans-serif;
+  --serif:'Instrument Serif', Georgia, serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, monospace;
+  --sans:'Inter Tight', system-ui, -apple-system, Segoe UI, sans-serif;
+  --pad:clamp(20px,4vw,64px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--noir);-webkit-text-size-adjust:100%}
+body{background:var(--noir);color:var(--fumee);font-family:var(--sans);font-size:17px;line-height:1.55;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body.loading{overflow:hidden}
+::selection{background:var(--feu);color:var(--noir)}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--incan);outline-offset:3px}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--acier)}
+.disp{font-family:var(--disp);font-weight:900;text-transform:uppercase;line-height:.92;letter-spacing:-.005em}
+.serif{font-family:var(--serif);font-style:italic;font-weight:400}
+.fire{color:var(--feu)} .hot{color:var(--incan)} .red{color:var(--alerte)} .steel{color:var(--acier)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- WebGL + grain ---------- */
+#fx{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;display:block;pointer-events:none;transition:opacity .2s linear}
+.grain{position:fixed;inset:-50%;z-index:60;pointer-events:none;opacity:.07;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation:grain 1.2s steps(6) infinite}
+@keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,-1%)}80%{transform:translate(3%,3%)}100%{transform:translate(0,0)}}
+main{position:relative;z-index:2}
+
+/* ---------- Loader ---------- */
+#loader{position:fixed;inset:0;z-index:100;background:var(--noir);display:flex;flex-direction:column;justify-content:space-between;padding:var(--pad)}
+#loader .l-top,#loader .l-bot{display:flex;justify-content:space-between;align-items:flex-end;gap:20px}
+#loader .l-count{font-family:var(--disp);font-weight:900;font-size:clamp(90px,22vw,320px);line-height:.8;color:var(--fumee)}
+#loader .l-bar{position:absolute;left:0;bottom:0;height:3px;background:var(--feu);width:0;box-shadow:0 0 18px var(--feu)}
+#loader .l-title{font-family:var(--disp);font-weight:800;font-size:clamp(18px,2.2vw,28px);letter-spacing:.06em}
+#loader.done{transition:clip-path 1.1s cubic-bezier(.77,0,.18,1);clip-path:inset(0 0 100% 0)}
+#loader{clip-path:inset(0 0 0 0)}
+
+/* ---------- Nav ---------- */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:18px var(--pad);mix-blend-mode:difference;pointer-events:none}
+.topbar > *{pointer-events:auto}
+.brand{font-family:var(--disp);font-weight:900;font-size:20px;letter-spacing:.04em;text-decoration:none;display:flex;gap:10px;align-items:center}
+.brand i{display:inline-block;width:9px;height:9px;background:var(--feu);border-radius:50%;box-shadow:0 0 12px var(--feu);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.25}}
+.clock{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--fumee)}
+.chapnav{position:fixed;right:14px;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;gap:14px}
+.chapnav a{display:flex;align-items:center;gap:10px;justify-content:flex-end;text-decoration:none;font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--acier);text-transform:uppercase}
+.chapnav a span{opacity:0;transform:translateX(6px);transition:.35s}
+.chapnav a b{display:block;width:18px;height:2px;background:var(--acier);transition:.35s}
+.chapnav a:hover span,.chapnav a:focus-visible span{opacity:1;transform:none;background:rgba(8,9,11,.85);padding:4px 8px}
+.chapnav a.on{color:var(--fumee)} .chapnav a.on b{width:34px;background:var(--feu)}
+.progress{position:fixed;left:0;top:0;height:2px;background:var(--feu);z-index:51;width:100%;transform-origin:0 50%;transform:scaleX(0)}
+
+/* ---------- Generic ---------- */
+section{position:relative}
+.wrap{padding:0 var(--pad)}
+.split .w{display:inline-block;overflow:hidden;vertical-align:top;padding:.14em 0 .04em;margin:-.14em 0 -.04em}
+.split .wi{display:inline-block;will-change:transform}
+.kicker{display:flex;gap:14px;align-items:center}
+.kicker:before{content:"";width:28px;height:1px;background:var(--feu)}
+.note{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--acier);border-left:2px solid var(--feu);padding:6px 0 6px 12px}
+
+/* ---------- Hero ---------- */
+#hero{height:240vh}
+.hero-stick{position:sticky;top:0;height:100vh;overflow:hidden}
+.hero-title{position:absolute;left:var(--pad);right:var(--pad);bottom:15vh;z-index:3}
+.hero-title h1{font-size:clamp(54px,9.2vw,176px);max-width:13ch;filter:drop-shadow(0 0 40px rgba(8,9,11,.55))}
+.hero-title h1 em{font-style:normal;color:var(--feu)}
+.hero-title p{max-width:520px;margin-top:26px;font-size:clamp(16px,1.4vw,20px);color:rgba(241,241,239,.86)}
+.hero-meta{position:absolute;top:84px;left:var(--pad);right:var(--pad);display:flex;justify-content:space-between;z-index:3}
+.hero-ff{position:absolute;right:8vw;bottom:-2vh;height:min(78vh,760px);z-index:2;filter:drop-shadow(0 0 40px rgba(255,90,31,.35));will-change:transform}
+.scrollcue{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:10px}
+.scrollcue .rail{width:1px;height:56px;background:var(--line2);position:relative;overflow:hidden}
+.scrollcue .rail:after{content:"";position:absolute;left:0;top:-40%;width:1px;height:40%;background:var(--feu);animation:rail 1.8s cubic-bezier(.6,0,.3,1) infinite}
+@keyframes rail{to{top:100%}}
+.hero-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,9,11,.55) 0%,rgba(8,9,11,0) 30%,rgba(8,9,11,0) 55%,rgba(8,9,11,.85) 100%);z-index:1;pointer-events:none}
+
+/* ---------- Chapter intro ---------- */
+.chapter{min-height:120vh;display:flex;align-items:center;padding:20vh var(--pad)}
+.chapter .ch-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:6vw;align-items:end;width:100%}
+.ch-num{font-family:var(--disp);font-weight:900;font-size:clamp(160px,30vw,520px);line-height:.72;color:transparent;-webkit-text-stroke:1.5px rgba(255,90,31,.7)}
+.chapter h2{font-size:clamp(46px,7.6vw,140px)}
+.chapter .lead{margin-top:28px;max-width:560px;font-size:clamp(17px,1.35vw,21px);color:rgba(241,241,239,.82)}
+.chapter.c2 .ch-num{-webkit-text-stroke-color:rgba(229,57,53,.75)}
+.chapter.c3 .ch-num{-webkit-text-stroke-color:rgba(241,241,239,.65)}
+
+/* ---------- Missions (horizontal) ---------- */
+#missions{overflow:hidden;background:linear-gradient(180deg,transparent,var(--noir) 12vh)}
+.m-track{display:flex;height:100vh;width:max-content;align-items:stretch}
+.m-intro{width:44vw;min-width:420px;padding:16vh var(--pad);display:flex;flex-direction:column;justify-content:space-between}
+.m-intro h3{font-size:clamp(48px,6vw,110px)}
+.mission{width:min(78vw,1080px);flex:none;display:grid;grid-template-columns:1.05fr .95fr;border-left:1px solid var(--line);position:relative}
+.mission .art{position:relative;overflow:hidden;background:var(--charbon)}
+.mission canvas{position:absolute;inset:0;width:100%;height:100%}
+.mission .art:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 60%,var(--noir));pointer-events:none}
+.mission .txt{padding:16vh 4vw 10vh 3vw;display:flex;flex-direction:column;justify-content:space-between}
+.mission .idx{font-family:var(--disp);font-weight:900;font-size:clamp(90px,11vw,190px);line-height:.8;color:var(--feu);opacity:.92}
+.mission h4{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:clamp(34px,3.6vw,64px);line-height:.92;margin:18px 0 18px}
+.mission p{color:rgba(241,241,239,.78);max-width:420px}
+.mission .facts{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:22px}
+.mission .facts span{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--acier)}
+.mission .facts span:before{content:"/ ";color:var(--feu)}
+
+/* ---------- Cycle ---------- */
+#cycle{padding:18vh var(--pad) 10vh}
+.cy-head{display:grid;grid-template-columns:1fr 1fr;gap:6vw;align-items:end;margin-bottom:10vh}
+.cy-head h3{font-size:clamp(46px,6.4vw,120px)}
+.cy-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6vw}
+.cy-sticky{position:sticky;top:10vh;height:80vh;display:flex;align-items:center;justify-content:center}
+.cy-sticky svg{width:min(100%,560px);height:auto;overflow:visible}
+.cy-steps .step{min-height:78vh;display:flex;flex-direction:column;justify-content:center;border-top:1px solid var(--line);padding:6vh 0}
+.cy-steps .num{font-family:var(--disp);font-weight:900;font-size:clamp(70px,7vw,120px);line-height:.8;color:var(--acier);transition:color .4s}
+.cy-steps .step.on .num{color:var(--feu)}
+.cy-steps h4{font-family:var(--disp);font-weight:800;font-size:clamp(36px,3.6vw,62px);text-transform:uppercase;line-height:.95;margin:14px 0}
+.cy-steps p{max-width:520px;color:rgba(241,241,239,.8)}
+.risk{margin-top:22px;display:flex;gap:14px;align-items:flex-start;max-width:520px;padding:14px 16px;border:1px solid rgba(229,57,53,.35);background:rgba(229,57,53,.06)}
+.risk b{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--alerte);white-space:nowrap;padding-top:3px}
+.risk span{font-size:15px;color:rgba(241,241,239,.85)}
+.ring-node circle.dot{transition:fill .4s, r .4s}
+.ring-node text{font-family:var(--mono);font-size:11px;letter-spacing:.14em;fill:var(--acier);transition:fill .4s}
+.ring-node.on text{fill:var(--fumee)}
+
+/* ---------- Statements ---------- */
+.statement{height:260vh}
+.statement .st-in{position:sticky;top:0;height:100vh;display:flex;align-items:center;padding:0 var(--pad)}
+.statement h2{font-size:clamp(44px,8.2vw,150px);max-width:16ch}
+.statement h2 .wd{opacity:.1;transition:none}
+.statement h2 .wd.k{color:var(--feu)}
+.statement .st-sub{position:absolute;left:var(--pad);bottom:10vh}
+
+/* ---------- Case studies ---------- */
+.case{padding:16vh 0 12vh;border-top:1px solid var(--line)}
+.case-head{display:grid;grid-template-columns:auto 1fr auto;gap:4vw;align-items:end;padding:0 var(--pad)}
+.case-head .tag{font-family:var(--disp);font-weight:900;font-size:clamp(20px,1.8vw,28px);color:var(--feu);letter-spacing:.04em}
+.case-head h3{font-size:clamp(64px,13vw,250px)}
+.case-head .date{text-align:right}
+.case-intro{display:grid;grid-template-columns:1fr 1fr;gap:6vw;padding:8vh var(--pad) 4vh}
+.case-intro p{color:rgba(241,241,239,.82);max-width:560px}
+.case-intro p + p{margin-top:16px}
+.bignums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:6vh 0}
+.bignum{padding:5vh var(--pad);border-right:1px solid var(--line)}
+.bignum:last-child{border-right:0}
+.bignum .n{font-family:var(--disp);font-weight:900;font-size:clamp(70px,10vw,190px);line-height:.8;font-variant-numeric:tabular-nums}
+.bignum .n small{font-size:.4em;color:var(--acier);margin-left:.08em}
+.bignum .l{margin-top:16px;max-width:300px;color:rgba(241,241,239,.8);font-size:15px}
+.bignum .s{margin-top:10px}
+.mapmod{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(320px,1fr);gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.mapview{position:relative;background:#0a0c0f;border-right:1px solid var(--line);min-height:520px}
+.mapview svg{display:block;width:100%;height:100%}
+.mapview .legend{position:absolute;left:18px;top:14px;display:flex;flex-wrap:wrap;gap:6px 16px;max-width:90%}
+.mapview .legend span{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--acier);display:flex;gap:6px;align-items:center}
+.mapview .legend i{display:inline-block;width:10px;height:10px}
+.mapview .schem{position:absolute;right:16px;top:14px}
+.mapside{padding:4vh 3vw;display:flex;flex-direction:column;gap:20px}
+.modeswitch{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line2)}
+.modeswitch button{padding:14px 12px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--acier);transition:.3s}
+.modeswitch button[aria-pressed="true"]{background:var(--fumee);color:var(--noir)}
+.modeswitch button.ai[aria-pressed="true"]{background:var(--feu);color:var(--noir)}
+.tl{display:flex;flex-direction:column}
+.tl button{display:grid;grid-template-columns:86px 1fr;gap:12px;text-align:left;padding:12px 0;border-top:1px solid var(--line);color:var(--acier);transition:color .3s}
+.tl button:last-child{border-bottom:1px solid var(--line)}
+.tl button .t{font-family:var(--mono);font-size:11px;letter-spacing:.1em;padding-top:2px}
+.tl button .d{font-size:14.5px;line-height:1.45}
+.tl button[aria-current="true"]{color:var(--fumee)}
+.tl button[aria-current="true"] .t{color:var(--feu)}
+.tl button:hover{color:var(--fumee)}
+.whatif{display:none;flex-direction:column;gap:0}
+.assist .whatif{display:flex}
+.assist .tl{display:none}
+.whatif h5{font-family:var(--disp);font-weight:800;font-size:28px;text-transform:uppercase;line-height:1;margin-bottom:6px}
+.whatif button{display:grid;grid-template-columns:30px 1fr;gap:10px;text-align:left;padding:12px 0;border-top:1px solid var(--line);font-size:14.5px;line-height:1.45;color:rgba(241,241,239,.75)}
+.whatif button b{font-family:var(--mono);font-size:11px;color:var(--feu);padding-top:2px}
+.whatif button:hover,.whatif button.on{color:var(--fumee)}
+.whatif .hyp{margin-top:14px}
+.slider{display:flex;gap:12px;align-items:center}
+.slider input{flex:1;accent-color:var(--feu)}
+/* map svg states */
+.mp .fz{opacity:0;transition:opacity .7s}
+.mp .ai{opacity:0;transition:opacity .6s;pointer-events:none}
+.assist .mp .ai{opacity:1}
+.assist .mp .ai.dim{opacity:.18}
+.mp text{font-family:var(--mono);font-size:10px;letter-spacing:.1em;fill:var(--acier);text-transform:uppercase}
+.mp text.big{font-family:var(--disp);font-weight:800;font-size:22px;letter-spacing:.06em;fill:var(--fumee)}
+.mp .pulse{animation:mpulse 1.8s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes mpulse{0%{transform:scale(.4);opacity:1}100%{transform:scale(2.4);opacity:0}}
+.mp .dash{stroke-dasharray:6 6;animation:dash 1.2s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-24}}
+.mp .blink{animation:pulse 1s infinite}
+.case.camp{background:linear-gradient(180deg,#0c0d10,#08090b)}
+.case.camp .case-head .tag{color:var(--alerte)}
+.case.camp .bignum .n{color:var(--fumee)}
+.case.camp .bignum:first-child .n{color:var(--alerte)}
+.case.lahaina .bignum:first-child .n{color:var(--feu)}
+.compare{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);margin-top:0}
+.compare > div{padding:5vh var(--pad)}
+.compare > div + div{border-left:1px solid var(--line);background:rgba(255,90,31,.04)}
+.compare h5{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:16px}
+.compare ul{list-style:none}
+.compare li{padding:10px 0;border-top:1px solid var(--line);font-size:15px;color:rgba(241,241,239,.82)}
+.msgcard{border:1px solid var(--feu);padding:16px;background:rgba(255,90,31,.07);margin-top:14px}
+.msgcard .mono{color:var(--feu)}
+.msgcard p{font-weight:600;margin-top:8px;font-size:15px}
+.sources{padding:12vh var(--pad);display:grid;grid-template-columns:1fr 2fr;gap:6vw;border-top:1px solid var(--line)}
+.sources ol{list-style:none;counter-reset:s;columns:2;column-gap:4vw}
+.sources li{counter-increment:s;break-inside:avoid;padding:10px 0;border-top:1px solid var(--line);font-size:14px;color:rgba(241,241,239,.78)}
+.sources li:before{content:counter(s,decimal-leading-zero);font-family:var(--mono);font-size:10px;color:var(--feu);margin-right:10px}
+.sources a{text-decoration-color:rgba(255,90,31,.5);text-underline-offset:3px}
+.sources a:hover{color:var(--incan)}
+
+/* ---------- Chapter III: today ---------- */
+#today{padding:12vh var(--pad)}
+#today h3{font-size:clamp(46px,6.4vw,120px);max-width:12ch}
+.status-legend{display:flex;gap:18px;flex-wrap:wrap;margin:28px 0 6vh}
+.st{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:5px 9px;border:1px solid currentColor;white-space:nowrap}
+.st.dep{color:var(--fumee)} .st.rol{color:var(--incan)} .st.pil{color:var(--acier)} .st.exp{color:var(--alerte)}
+.st:before{content:"";width:6px;height:6px;background:currentColor;border-radius:50%}
+.tech{display:grid;grid-template-columns:60px minmax(0,1.1fr) minmax(0,1.6fr) 210px;gap:3vw;align-items:start;padding:28px 0;border-top:1px solid var(--line);transition:background .4s}
+.tech:last-child{border-bottom:1px solid var(--line)}
+.tech:hover{background:linear-gradient(90deg,rgba(255,90,31,.06),transparent)}
+.tech .k{font-family:var(--mono);font-size:12px;color:var(--feu);padding-top:8px}
+.tech h4{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:clamp(28px,2.6vw,44px);line-height:.95}
+.tech p{color:rgba(241,241,239,.8);font-size:15.5px}
+.tech p small{display:block;margin-top:8px;color:var(--acier);font-size:13px}
+.tech .stc{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+
+/* ---------- Ecosystem ---------- */
+#ecosystem{height:100vh;min-height:640px;position:relative;overflow:hidden;border-top:1px solid var(--line);background:#07080a}
+#ecosystem:before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(90deg,rgba(7,8,10,.88) 0%,rgba(7,8,10,.4) 38%,transparent 55%),linear-gradient(0deg,rgba(7,8,10,.8),transparent 25%)}
+#eco-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab}
+#eco-canvas:active{cursor:grabbing}
+.eco-head{position:absolute;left:var(--pad);top:11vh;z-index:5;max-width:520px;pointer-events:none}
+.eco-head h3{font-size:clamp(40px,5vw,92px)}
+.eco-head p{margin-top:14px;color:rgba(241,241,239,.8);font-size:15.5px}
+.eco-labels{position:absolute;inset:0;z-index:4;pointer-events:none}
+.eco-label{position:absolute;left:0;top:0;pointer-events:auto;display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;padding:6px 10px 6px 8px;background:rgba(8,9,11,.72);border:1px solid var(--line2);backdrop-filter:blur(6px);white-space:nowrap;transition:border-color .3s,background .3s,opacity .3s;will-change:transform}
+.eco-label i{width:7px;height:7px;border-radius:50%;background:var(--feu);box-shadow:0 0 10px var(--feu)}
+.eco-label:hover,.eco-label.on{border-color:var(--feu);background:rgba(255,90,31,.18)}
+.eco-label.dim{opacity:.1;pointer-events:none}
+.eco-label.off{opacity:0 !important;pointer-events:none}
+.eco-layers{position:absolute;left:var(--pad);bottom:5vh;z-index:5;display:flex;flex-wrap:wrap;gap:6px;max-width:min(760px,60vw)}
+.eco-layers button{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:8px 11px;border:1px solid var(--line2);color:var(--fumee);background:rgba(8,9,11,.6)}
+.eco-layers button[aria-pressed="false"]{color:var(--acier);text-decoration:line-through;border-color:var(--line)}
+.eco-panel{position:absolute;right:0;top:0;bottom:0;width:min(440px,92vw);z-index:6;background:rgba(10,11,14,.92);border-left:1px solid var(--line2);backdrop-filter:blur(14px);padding:12vh 32px 32px;transform:translateX(102%);transition:transform .7s cubic-bezier(.77,0,.18,1);overflow:auto}
+.eco-panel.open{transform:none}
+.eco-panel .close{position:absolute;top:84px;right:24px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;border:1px solid var(--line2);padding:7px 10px}
+.eco-panel .pn{font-family:var(--disp);font-weight:900;font-size:80px;line-height:.8;color:var(--feu)}
+.eco-panel h4{font-family:var(--disp);font-weight:800;font-size:44px;line-height:.92;text-transform:uppercase;margin:12px 0 10px}
+.eco-panel h6{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--acier);margin:24px 0 8px}
+.eco-panel ul{list-style:none}
+.eco-panel li{padding:7px 0;border-top:1px solid var(--line);font-size:14.5px}
+.eco-panel .feed{font-family:var(--mono);font-size:11.5px;line-height:1.9;color:var(--incan);background:#08090b;border:1px solid var(--line);padding:12px}
+.eco-panel .today{font-size:14px;color:rgba(241,241,239,.8)}
+.eco-human{position:absolute;right:var(--pad);bottom:5vh;z-index:5;max-width:300px;text-align:right}
+
+/* ---------- Simulation ---------- */
+#sim{padding:16vh var(--pad) 12vh;border-top:1px solid var(--line);background:linear-gradient(180deg,#0b0c0f,#08090b)}
+.sim-head{display:grid;grid-template-columns:1.2fr 1fr;gap:6vw;align-items:end}
+.sim-head h3{font-size:clamp(46px,6.8vw,128px)}
+.banner{display:flex;gap:12px;align-items:center;margin:5vh 0 3vh;padding:12px 16px;border:1px dashed var(--incan);color:var(--incan);font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.sim-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line2)}
+.sim-tabs button{text-align:left;padding:18px 18px 20px;border-right:1px solid var(--line2);transition:background .3s,color .3s;color:var(--acier)}
+.sim-tabs button:last-child{border-right:0}
+.sim-tabs button b{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.16em;margin-bottom:8px}
+.sim-tabs button span{font-family:var(--disp);font-weight:800;font-size:clamp(20px,1.8vw,30px);text-transform:uppercase;line-height:.95}
+.sim-tabs button[aria-selected="true"]{background:var(--fumee);color:var(--noir)}
+.sim-tabs button[aria-selected="true"] b{color:var(--feu)}
+.sim-body{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(320px,1fr);border:1px solid var(--line2);border-top:0}
+.sim-stage{position:relative;background:#090a0d;border-right:1px solid var(--line2);aspect-ratio:1000/620}
+.sim-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.sim-hud{position:absolute;left:14px;top:12px;right:14px;display:flex;justify-content:space-between;pointer-events:none}
+.sim-hud .clk{font-family:var(--mono);font-size:13px;letter-spacing:.12em;color:var(--fumee)}
+.sim-side{display:flex;flex-direction:column;min-height:0}
+.sim-sit{padding:18px 20px;border-bottom:1px solid var(--line2);font-size:14.5px;color:rgba(241,241,239,.85)}
+.sim-step{padding:18px 20px;border-bottom:1px solid var(--line2)}
+.sim-step h4{font-family:var(--disp);font-weight:800;font-size:30px;text-transform:uppercase;line-height:.95;margin-top:6px}
+.sim-feed{flex:1;min-height:150px;max-height:220px;overflow:auto;padding:12px 20px;font-family:var(--mono);font-size:11.5px;line-height:1.8;color:var(--acier);border-bottom:1px solid var(--line2)}
+.sim-feed div{animation:feedin .5s ease both}
+.sim-feed div b{color:var(--incan);font-weight:400}
+.sim-feed div.alert b{color:var(--alerte)}
+@keyframes feedin{from{opacity:0;transform:translateY(6px)}}
+.sim-dec{display:grid;grid-template-columns:1fr 1fr}
+.sim-dec > div{padding:16px 20px;font-size:14px;line-height:1.45}
+.sim-dec > div + div{border-left:1px solid var(--line2)}
+.sim-dec .mono{display:block;margin-bottom:8px}
+.sim-dec .ai .mono{color:var(--incan)}
+.sim-dec .hu .mono{color:var(--fumee)}
+.sim-benefit{padding:14px 20px;border-top:1px solid var(--line2);font-size:14px;background:rgba(255,90,31,.06)}
+.sim-ctrl{display:grid;grid-template-columns:auto auto auto 1fr;gap:0;border:1px solid var(--line2);border-top:0;align-items:stretch}
+.sim-ctrl button{padding:14px 18px;border-right:1px solid var(--line2);font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.sim-ctrl button:hover{background:rgba(241,241,239,.06)}
+.sim-steps{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));}
+.sim-steps button{border-right:1px solid var(--line);font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--acier);text-align:left;padding:10px 10px;position:relative;line-height:1.35}
+.sim-steps button:last-child{border-right:0}
+.sim-steps button:after{content:"";position:absolute;left:0;bottom:0;height:2px;width:var(--p,0%);background:var(--feu)}
+.sim-steps button.done{color:var(--fumee)}
+.sim-steps button.cur{color:var(--fumee);background:rgba(255,90,31,.08)}
+
+/* ---------- Limits ---------- */
+#limits{padding:16vh var(--pad) 10vh;border-top:1px solid var(--line)}
+.lim-head{display:grid;grid-template-columns:1fr 1fr;gap:6vw;align-items:end;margin-bottom:8vh}
+.lim-head h3{font-size:clamp(46px,7vw,130px)}
+.limit{display:grid;grid-template-columns:90px minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr);gap:3vw;padding:30px 0;border-top:1px solid var(--line);align-items:start;position:relative}
+.limit:last-of-type{border-bottom:1px solid var(--line)}
+.limit .k{font-family:var(--mono);color:var(--alerte);font-size:12px;padding-top:8px}
+.limit h4{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:clamp(30px,3.2vw,54px);line-height:.92;position:relative}
+.limit:hover h4{animation:glitch .35s steps(2) 2}
+@keyframes glitch{0%{transform:translate(0)}25%{transform:translate(-3px,1px);text-shadow:3px 0 var(--alerte),-3px 0 var(--incan)}50%{transform:translate(2px,-1px)}75%{transform:translate(-1px,2px);text-shadow:-2px 0 var(--alerte)}100%{transform:none;text-shadow:none}}
+.limit p{font-size:15px;color:rgba(241,241,239,.8)}
+.limit .fix{font-size:14.5px;color:var(--fumee)}
+.limit .fix:before{content:"PARADE — ";font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--incan)}
+.degraded{margin-top:10vh;display:grid;grid-template-columns:1fr 1.2fr;gap:5vw;align-items:center}
+.degraded h4{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:clamp(34px,3.6vw,60px);line-height:.95}
+.degraded p{margin-top:14px;color:rgba(241,241,239,.8);max-width:480px}
+.degraded .tgl{margin-top:22px;padding:14px 18px;border:1px solid var(--alerte);color:var(--fumee);font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.degraded .tgl[aria-pressed="true"]{background:var(--alerte);color:var(--noir)}
+.minihud{border:1px solid var(--line2);background:#0a0b0e;font-family:var(--mono);font-size:12px;position:relative;overflow:hidden}
+.minihud .row{display:flex;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--line);transition:color .4s,opacity .4s}
+.minihud .row:first-child{border-top:0}
+.minihud .row .v{color:var(--incan)}
+.minihud.off .row .v{color:var(--acier);text-decoration:line-through}
+.minihud .stale{display:none;color:var(--alerte)}
+.minihud.off .stale{display:inline}
+.minihud .fallback{display:none;padding:14px 16px;border-top:1px solid var(--alerte);background:rgba(229,57,53,.08);color:var(--fumee);font-family:var(--sans);font-size:14px;line-height:1.5}
+.minihud.off .fallback{display:block}
+.minihud.off:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 2px,transparent 2px 4px);pointer-events:none;animation:grain .4s steps(3) infinite}
+.lim-quote{padding:18vh var(--pad) 10vh}
+.lim-quote blockquote{font-family:var(--serif);font-style:italic;font-size:clamp(34px,4.6vw,78px);line-height:1.05;max-width:20ch}
+.lim-quote blockquote b{font-family:var(--disp);font-style:normal;font-weight:900;text-transform:uppercase;color:var(--feu);letter-spacing:.005em}
+
+/* ---------- Finale ---------- */
+#finale{height:300vh}
+.fin-stick{position:sticky;top:0;height:100vh;overflow:hidden}
+.fin-box{position:absolute;right:8vw;bottom:-2vh;height:min(80vh,780px);aspect-ratio:300/620;z-index:2}
+.fin-ff{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 0 50px rgba(255,140,66,.35));transform-origin:50% 100%}
+.fin-hud{position:absolute;inset:0;z-index:3;pointer-events:none}
+.fin-hud .hudtag{right:calc(100% - 18%)}
+.fin-title{position:absolute;left:var(--pad);top:15vh;z-index:4;width:min(54vw,900px)}
+.fin-title h2{font-size:clamp(40px,6.6vw,128px);transform-origin:0 0;max-width:11ch}
+.fin-title h2 .k{color:var(--feu)}
+.fin-text{position:absolute;left:var(--pad);bottom:9vh;z-index:4;width:min(560px,44vw)}
+.fin-text p{font-family:var(--serif);font-style:italic;font-size:clamp(22px,2.2vw,34px);line-height:1.2;text-shadow:0 0 30px #08090b}
+.hudtag{position:absolute;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--fumee);background:rgba(8,9,11,.6);border:1px solid rgba(255,140,66,.6);padding:6px 9px;white-space:nowrap}
+.hudtag b{color:var(--incan);font-weight:400}
+.hudtag:before{content:"";position:absolute;width:40px;height:1px;background:rgba(255,140,66,.6);top:50%}
+.hudtag.l:before{right:-40px} .hudtag.r:before{left:-40px}
+footer{position:relative;z-index:2;padding:12vh var(--pad) 6vh;border-top:1px solid var(--line);background:var(--noir)}
+footer .f-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:5vw}
+footer h5{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--acier);margin-bottom:12px}
+footer p,footer li{font-size:14px;color:rgba(241,241,239,.75)}
+footer ul{list-style:none} footer li{padding:6px 0;border-top:1px solid var(--line)}
+footer .giant{font-family:var(--disp);font-weight:900;font-size:clamp(46px,10.4vw,240px);line-height:.8;margin-top:10vh;color:transparent;-webkit-text-stroke:1px rgba(241,241,239,.25);white-space:nowrap}
+footer .giant span{color:var(--feu);-webkit-text-stroke:0}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1000px){
+  .chapnav{display:none}
+  .chapter .ch-grid,.cy-head,.cy-grid,.case-intro,.sim-head,.lim-head,.degraded,.sources,footer .f-grid{grid-template-columns:1fr}
+  .ch-num{font-size:44vw}
+  .cy-sticky{position:relative;top:0;height:auto;padding:4vh 0}
+  .cy-steps .step{min-height:auto}
+  .m-track{flex-direction:column;width:auto;height:auto}
+  .m-intro{width:auto;min-width:0;padding:10vh var(--pad) 4vh}
+  .mission{width:auto;grid-template-columns:1fr;border-left:0;border-top:1px solid var(--line)}
+  .mission .art{height:46vh}
+  .mission .art:after{background:linear-gradient(180deg,transparent 55%,var(--noir))}
+  .mission .txt{padding:4vh var(--pad) 8vh}
+  .case-head{grid-template-columns:1fr}
+  .case-head .date{text-align:left}
+  .bignums{grid-template-columns:1fr}
+  .bignum{border-right:0;border-bottom:1px solid var(--line)}
+  .mapmod,.sim-body{grid-template-columns:1fr}
+  .mapview{border-right:0;min-height:0;aspect-ratio:800/520}
+  .compare{grid-template-columns:1fr}
+  .compare > div + div{border-left:0;border-top:1px solid var(--line)}
+  .sources ol{columns:1}
+  .tech{grid-template-columns:44px 1fr;gap:14px}
+  .tech p,.tech .stc{grid-column:2}
+  .tech .stc{flex-direction:row;flex-wrap:wrap}
+  .limit{grid-template-columns:44px 1fr;gap:14px}
+  .limit p{grid-column:2}
+  .sim-tabs{grid-template-columns:1fr 1fr}
+  .sim-tabs button:nth-child(2){border-right:0}
+  .sim-tabs button:nth-child(-n+2){border-bottom:1px solid var(--line2)}
+  .sim-stage{border-right:0}
+  .sim-ctrl{grid-template-columns:1fr 1fr 1fr}
+  .sim-steps{grid-column:1/-1;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line2)}
+  .eco-layers{max-width:none;right:var(--pad);bottom:2vh}
+  .eco-human{display:none}
+  .eco-head{top:9vh}
+  .hero-ff{right:-6vw;height:62vh;opacity:.9}
+  .hudtag{font-size:9px}
+  .fin-box{right:50%;transform:translateX(50%);height:62vh;opacity:.55}
+  .fin-hud{display:none}
+  .fin-title{width:auto;right:var(--pad);top:12vh}
+  .fin-text{width:auto;right:var(--pad)}
+  .statement{height:auto}
+  .statement .st-in{position:relative;height:auto;padding:22vh var(--pad)}
+  .statement h2 .wd{opacity:1}
+  .statement .st-sub{position:relative;bottom:auto;margin-top:30px}
+}
+@media (prefers-reduced-motion: reduce){
+  .grain{animation:none}
+  .scrollcue .rail:after,.brand i,.mp .pulse,.mp .dash,.mp .blink{animation:none}
+  .statement{height:auto}
+  .statement .st-in{position:relative;height:auto;padding:22vh var(--pad)}
+  .statement h2 .wd{opacity:1}
+  .statement .st-sub{position:relative;bottom:auto;margin-top:30px}
+  #hero{height:100vh} #finale{height:100vh}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ff" viewBox="0 0 300 620">
+      <g fill="#040506">
+        <path d="M86 92 Q150 114 216 92 L228 108 Q150 134 74 108 Z"/>
+        <path d="M100 94 Q101 38 150 31 Q199 38 202 94 Q150 104 100 94 Z"/>
+        <path d="M145 28 h10 v68 h-10z"/>
+        <path d="M118 104 h64 l6 28 h-76z"/>
+        <path d="M92 128 Q150 112 208 128 L236 160 L244 330 Q150 350 58 330 L64 160 Z"/>
+        <path d="M64 150 Q44 160 40 200 L30 300 Q28 322 44 326 L58 324 L66 220 Z"/>
+        <path d="M28 318 h32 l-2 30 q-14 8 -30 0 z"/>
+        <path d="M232 150 Q262 160 270 196 L284 250 L262 264 L246 214 Z"/>
+        <path d="M66 326 L148 336 L144 560 L98 560 L86 420 Z"/>
+        <path d="M152 336 L236 326 L216 420 L204 560 L158 560 Z"/>
+        <path d="M92 552 h56 v40 q-34 6 -64 0 z"/>
+        <path d="M156 552 h54 l8 40 q-34 6 -64 0 z"/>
+        <path d="M278 252 Q302 330 272 420 Q242 520 292 620 L276 620 Q228 520 258 420 Q286 330 262 260 Z"/>
+      </g>
+      <rect x="118" y="134" width="64" height="150" rx="30" fill="#0b0d10" stroke="#1c1f24" stroke-width="2"/>
+      <path d="M112 140 L120 292 M188 140 L180 292" stroke="#15181c" stroke-width="7" fill="none"/>
+      <g fill="var(--stripe,#3b2b22)">
+        <path d="M60 300 Q150 318 244 300 l1 12 Q150 330 59 312 Z"/>
+        <path d="M37 262 l23 2 -1 10 -23 -2z"/>
+        <path d="M238 214 l20 -6 3 10 -20 6z"/>
+        <path d="M90 470 h52 v10 h-52z"/><path d="M160 470 h50 v10 h-50z"/>
+      </g>
+      <path d="M104 97 Q150 106 198 97" stroke="var(--visor,transparent)" stroke-width="3" fill="none"/>
+      <rect x="140" y="150" width="20" height="6" fill="var(--led,transparent)"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div id="loader" aria-hidden="true">
+  <div class="l-top"><span class="mono">Séquence d'ouverture</span><span class="mono">Documentaire interactif</span></div>
+  <div class="l-bot">
+    <div class="l-count" id="lcount">00</div>
+    <div style="text-align:right"><div class="l-title">FIREFIGHTERS 2035</div><div class="mono" style="margin-top:6px">Quand le courage humain rencontre l'intelligence artificielle</div></div>
+  </div>
+  <div class="l-bar" id="lbar"></div>
+</div>
+
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<header class="topbar">
+  <a class="brand" href="#hero"><i></i>FF/2035</a>
+  <span class="clock" id="clock" aria-hidden="true">T+00:00:00</span>
+</header>
+<nav class="chapnav" aria-label="Chapitres">
+  <a href="#hero" data-sec="hero"><span>Ouverture</span><b></b></a>
+  <a href="#ch1" data-sec="ch1"><span>I — Le courage humain</span><b></b></a>
+  <a href="#ch2" data-sec="ch2"><span>II — Catastrophes réelles</span><b></b></a>
+  <a href="#ch3" data-sec="ch3"><span>III — Firefighters 2035</span><b></b></a>
+  <a href="#sim" data-sec="sim"><span>Simulations</span><b></b></a>
+  <a href="#limits" data-sec="limits"><span>Limites</span><b></b></a>
+  <a href="#finale" data-sec="finale"><span>Conclusion</span><b></b></a>
+</nav>
+
+<main>
+<!-- ================= HERO ================= -->
+<section id="hero" aria-label="Ouverture">
+  <div class="hero-stick">
+    <div class="hero-shade"></div>
+    <div class="hero-meta"><span class="mono">Séquence 00 — Chaque seconde compte</span><span class="mono" id="heroTemp">Scène reconstituée en 3D</span></div>
+    <svg class="hero-ff" id="heroFF" viewBox="0 0 300 620" aria-hidden="true"><use href="#ff"/></svg>
+    <div class="hero-title">
+      <h1 class="disp split" id="heroH1">Quand chaque seconde peut <em>sauver une vie.</em></h1>
+      <p id="heroSub">Derrière chaque intervention, des femmes et des hommes affrontent l'imprévisible pour protéger les autres.</p>
+    </div>
+    <div class="scrollcue"><span class="mono">Défiler</span><div class="rail"></div></div>
+  </div>
+</section>
+
+<!-- ================= CHAPITRE I ================= -->
+<section id="ch1" class="chapter c1" aria-labelledby="ch1t">
+  <div class="ch-grid">
+    <div class="ch-num" aria-hidden="true">I</div>
+    <div>
+      <div class="mono kicker">Chapitre I</div>
+      <h2 class="disp split" id="ch1t" style="margin-top:20px">Le courage humain</h2>
+      <p class="lead reveal">Avant de parler d'algorithmes, il faut regarder ce que fait un sapeur-pompier : entrer là où tout le monde sort, décider vite avec des informations partielles, et ramener les autres. La technologie n'a de sens que si elle sert ce geste.</p>
+    </div>
+  </div>
+</section>
+
+<section id="missions" aria-label="Les missions des sapeurs-pompiers">
+  <div class="m-track" id="mtrack">
+    <div class="m-intro">
+      <div class="mono kicker">Comprendre le métier</div>
+      <div>
+        <h3 class="disp split">Six missions.<br><span class="steel">Un seul réflexe.</span></h3>
+        <p style="margin-top:22px;max-width:380px;color:rgba(241,241,239,.8)">L'incendie n'est qu'une partie du travail. Les pompiers sont la porte d'entrée des secours pour presque toutes les urgences du quotidien.</p>
+      </div>
+      <span class="mono">Faites défiler →</span>
+    </div>
+    <article class="mission"><div class="art"><canvas data-art="fire"></canvas></div><div class="txt"><div class="idx">01</div><div><h4>Lutte contre les incendies</h4><p>Habitations, forêts, parkings, entrepôts. Il faut lire la fumée, anticiper l'embrasement généralisé, ventiler ou confiner — souvent sans visibilité.</p><div class="facts"><span>Attaque du feu</span><span>Ventilation</span><span>Protection des biens</span></div></div></div></article>
+    <article class="mission"><div class="art"><canvas data-art="search"></canvas></div><div class="txt"><div class="idx">02</div><div><h4>Recherche et sauvetage</h4><p>Retrouver des personnes dans la fumée, les décombres ou l'eau. Une recherche efficace est méthodique : zone par zone, pièce par pièce, sans laisser de trou dans le quadrillage.</p><div class="facts"><span>Fouille</span><span>Désincarcération</span><span>Sauvetage en milieu périlleux</span></div></div></div></article>
+    <article class="mission"><div class="art"><canvas data-art="road"></canvas></div><div class="txt"><div class="idx">03</div><div><h4>Accidents de circulation</h4><p>Baliser, sécuriser, stabiliser le véhicule, puis extraire la victime sans aggraver ses blessures — au milieu de la circulation, du carburant et des airbags non déclenchés.</p><div class="facts"><span>Balisage</span><span>Désincarcération</span><span>Premiers soins</span></div></div></div></article>
+    <article class="mission"><div class="art"><canvas data-art="quake"></canvas></div><div class="txt"><div class="idx">04</div><div><h4>Catastrophes naturelles</h4><p>Inondations, tempêtes, séismes, feux de forêt. Des événements qui saturent les réseaux, coupent les routes et multiplient les appels en quelques minutes.</p><div class="facts"><span>Évacuation</span><span>Sauvetage aquatique</span><span>Déblaiement</span></div></div></div></article>
+    <article class="mission"><div class="art"><canvas data-art="hazmat"></canvas></div><div class="txt"><div class="idx">05</div><div><h4>Incidents industriels et chimiques</h4><p>Fuites, explosions, nuages toxiques. Les équipes spécialisées mesurent, délimitent et décident des périmètres — un mauvais vent peut tout changer.</p><div class="facts"><span>Risques chimiques</span><span>Détection</span><span>Périmètres</span></div></div></div></article>
+    <article class="mission"><div class="art"><canvas data-art="pulse"></canvas></div><div class="txt"><div class="idx">06</div><div><h4>Secours et assistance aux personnes</h4><p>Malaises, chutes, arrêts cardiaques. La part la plus fréquente de l'activité, où quelques minutes séparent souvent une récupération complète de séquelles graves.</p><div class="facts"><span>Secourisme</span><span>Réanimation</span><span>Assistance</span></div></div></div></article>
+  </div>
+</section>
+
+<section id="cycle" aria-labelledby="cyt">
+  <div class="cy-head">
+    <div><div class="mono kicker">Le cycle d'intervention</div><h3 class="disp split" id="cyt" style="margin-top:20px">Six étapes.<br>Aucune ne pardonne.</h3></div>
+    <p class="reveal" style="color:rgba(241,241,239,.8);max-width:520px">Une intervention est une chaîne. Chaque maillon dépend de l'information qu'il reçoit du précédent. Un retard, une donnée manquante ou un message mal compris ne s'additionnent pas : ils se multiplient.</p>
+  </div>
+  <div class="cy-grid">
+    <div class="cy-sticky">
+      <svg viewBox="0 0 500 500" id="cyring" aria-hidden="true">
+        <circle cx="250" cy="250" r="200" fill="none" stroke="rgba(241,241,239,.12)" stroke-width="1"/>
+        <circle id="cyprog" cx="250" cy="250" r="200" fill="none" stroke="#FF5A1F" stroke-width="2" stroke-dasharray="1256.6" stroke-dashoffset="1256.6" transform="rotate(-90 250 250)"/>
+        <circle cx="250" cy="250" r="150" fill="none" stroke="rgba(241,241,239,.06)" stroke-dasharray="2 6"/>
+        <g id="cynodes"></g>
+        <text id="cybig" x="250" y="268" text-anchor="middle" style="font-family:var(--disp);font-weight:900;font-size:120px;fill:#F1F1EF">01</text>
+        <text id="cylab" x="250" y="306" text-anchor="middle" style="font-family:var(--mono);font-size:13px;letter-spacing:.2em;fill:#FF5A1F">DÉTECTION</text>
+      </svg>
+    </div>
+    <div class="cy-steps" id="cysteps">
+      <div class="step"><div class="num">01</div><h4>Détection</h4><p>Un appel, une alarme, une fumée aperçue au loin. Tout commence par quelqu'un — ou quelque chose — qui remarque le problème et le signale.</p><div class="risk"><b>Si ça dérape</b><span>Un départ de feu repéré tard, la nuit ou en zone isolée, a déjà grandi quand les secours sont alertés.</span></div></div>
+      <div class="step"><div class="num">02</div><h4>Évaluation</h4><p>L'opérateur interroge l'appelant : quoi, où, combien de personnes, quels dangers. En quelques questions, il doit se représenter une scène qu'il ne voit pas.</p><div class="risk"><b>Si ça dérape</b><span>Une adresse imprécise, un témoin paniqué, une information manquante : la réponse est mal dimensionnée.</span></div></div>
+      <div class="step"><div class="num">03</div><h4>Dispatching</h4><p>Choisir les moyens adaptés, les plus proches, sans dégarnir un autre secteur. Un arbitrage permanent entre urgence et disponibilité.</p><div class="risk"><b>Si ça dérape</b><span>Engins envoyés au mauvais endroit, en nombre insuffisant, ou bloqués par un itinéraire coupé.</span></div></div>
+      <div class="step"><div class="num">04</div><h4>Intervention</h4><p>Sur place, le chef d'agrès fait sa reconnaissance : où sont les victimes, où va le feu, quelle structure tient encore. Puis il engage ses équipes.</p><div class="risk"><b>Si ça dérape</b><span>Fumée, nuit, plans inconnus : les décisions se prennent à l'aveugle, au prix du risque pour les équipes.</span></div></div>
+      <div class="step"><div class="num">05</div><h4>Coordination</h4><p>Quand plusieurs services interviennent, il faut parler la même langue, partager la même carte et savoir qui fait quoi — en temps réel.</p><div class="risk"><b>Si ça dérape</b><span>Radios saturées, informations contradictoires, consignes d'évacuation qui n'atteignent pas la population.</span></div></div>
+      <div class="step"><div class="num">06</div><h4>Sauvetage et récupération</h4><p>Extraire, soigner, reloger, puis comprendre. Le retour d'expérience transforme chaque intervention en leçon pour la suivante.</p><div class="risk"><b>Si ça dérape</b><span>Sans retour d'expérience, les mêmes erreurs se reproduisent à la catastrophe suivante.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="statement" id="q1" aria-label="Transition">
+  <div class="st-in">
+    <h2 class="disp words">Mais comment protéger ceux qui risquent leur vie pour protéger les autres ?</h2>
+    <div class="st-sub mono">Fin du chapitre I</div>
+  </div>
+</section>
+
+<!-- ================= CHAPITRE II ================= -->
+<section id="ch2" class="chapter c2" aria-labelledby="ch2t">
+  <div class="ch-grid">
+    <div class="ch-num" aria-hidden="true">II</div>
+    <div>
+      <div class="mono kicker">Chapitre II</div>
+      <h2 class="disp split" id="ch2t" style="margin-top:20px">Les catastrophes réelles</h2>
+      <p class="lead reveal">Deux incendies, deux villes, 187 morts. Les rapports officiels qui ont suivi ne pointent pas un manque de courage, mais des alertes qui ne sont pas parties, des routes saturées et des informations arrivées trop tard.</p>
+      <p class="note reveal" style="margin-top:28px;max-width:560px">Les faits ci-dessous sont sourcés. Les pistes « et si » sont des hypothèses : rien ne permet d'affirmer que la technologie aurait empêché ces drames.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CAS 01 -->
+<section class="case lahaina" id="lahaina" aria-labelledby="lht">
+  <div class="case-head">
+    <div class="tag">CAS 01</div>
+    <h3 class="disp split" id="lht">Lahaina</h3>
+    <div class="date mono">Maui, Hawaï<br>8–9 août 2023</div>
+  </div>
+  <div class="case-intro">
+    <p class="reveal">Le 8 août 2023, des vents violents, liés au passage d'un ouragan au sud de Maui, soufflent sur une végétation très sèche. Un feu se déclare le matin près de Lahainaluna Road ; il est annoncé maîtrisé, puis reprend dans l'après-midi et traverse la ville historique en quelques heures.</p>
+    <div class="reveal"><p>Les sirènes d'alerte de l'île ne sont pas déclenchées ; la police prévient les habitants porte à porte. Les routes se saturent, certaines sont bloquées, et des habitants se réfugient dans l'océan.</p><p>Le rapport de l'institut FSRI pour le procureur général d'Hawaï conclut qu'aucun facteur unique n'explique le bilan. Il relève un manque de préparation, de moyens et de coordination face à un feu extrême.</p></div>
+  </div>
+  <div class="bignums">
+    <div class="bignum"><div class="n" data-count="102">0</div><div class="l">vies perdues, le feu le plus meurtrier aux États-Unis depuis plus d'un siècle.</div><div class="mono s">Source : Maui Police Dept. / AP</div></div>
+    <div class="bignum"><div class="n" data-count="2200" data-plus="1">0</div><div class="l">bâtiments détruits, en grande majorité des habitations.</div><div class="mono s">Source : FEMA / Pacific Disaster Center</div></div>
+    <div class="bignum"><div class="n" data-count="60" data-suffix="%" data-pre="+">0</div><div class="l">Plus de 60 % des victimes avaient tenté de fuir les flammes, d'après l'analyse FSRI.</div><div class="mono s">Source : FSRI, rapport phase 2 (2024)</div></div>
+  </div>
+  <div class="mapmod" id="lhmod">
+    <div class="mapview">
+      <svg class="mp" id="lhmap" viewBox="0 0 800 520" role="img" aria-labelledby="lhmapt">
+        <title id="lhmapt">Carte schématique de Lahaina : propagation du feu le 8 août 2023, poussé par des vents d'est vers la côte.</title>
+        <defs>
+          <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="#858B94" stroke-width="1.4" opacity=".6"/></pattern>
+          <radialGradient id="fireG"><stop offset="0" stop-color="#FF8C42" stop-opacity=".95"/><stop offset=".6" stop-color="#FF5A1F" stop-opacity=".75"/><stop offset="1" stop-color="#E53935" stop-opacity=".3"/></radialGradient>
+          <linearGradient id="smokeG" x1="1" x2="0"><stop offset="0" stop-color="#858B94" stop-opacity=".45"/><stop offset="1" stop-color="#858B94" stop-opacity="0"/></linearGradient>
+          <marker id="arw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#858B94"/></marker>
+          <marker id="arwF" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#FF5A1F"/></marker>
+        </defs>
+        <g stroke="#161b22" fill="none" stroke-width="1">
+          <path d="M0 60 Q80 50 160 62 T300 60"/><path d="M0 140 Q90 130 170 142 T300 140"/><path d="M0 220 Q90 210 170 222 T290 220"/><path d="M0 300 Q90 290 170 302 T300 300"/><path d="M0 380 Q90 370 170 382 T310 380"/><path d="M0 460 Q90 450 170 462 T320 460"/>
+        </g>
+        <path d="M310 0 C 296 80, 342 140, 322 220 C 304 300, 352 380, 332 520 L 800 520 L 800 0 Z" fill="#101318" stroke="#2a2f37"/>
+        <g fill="none" stroke="#1b2027"><ellipse cx="730" cy="260" rx="70" ry="110"/><ellipse cx="730" cy="260" rx="130" ry="170"/><ellipse cx="730" cy="260" rx="200" ry="230"/><ellipse cx="730" cy="260" rx="270" ry="290"/></g>
+        <g id="lhgrid" fill="#1c2028"></g>
+        <path d="M352 0 C 344 100, 372 160, 356 240 C 344 320, 382 400, 372 520" stroke="#3a404a" stroke-width="3" fill="none"/>
+        <path d="M322 125 C 314 180, 334 240, 318 300 C 312 320, 322 340, 330 350" stroke="#3a404a" stroke-width="1.6" fill="none"/>
+        <path d="M338 232 C 380 226, 430 214, 520 196" stroke="#3a404a" stroke-width="1.6" fill="none"/>
+        <path d="M430 40 C 446 200, 426 330, 452 500" stroke="#2f343c" stroke-width="2" stroke-dasharray="8 5" fill="none"/>
+        <text x="120" y="300" class="big" style="fill:#2b313a">OCÉAN</text><text x="120" y="324" class="big" style="fill:#2b313a">PACIFIQUE</text>
+        <text x="236" y="112">LAHAINA</text>
+        <text x="380" y="512">RTE 30</text><text x="455" y="60">BYPASS</text><text x="470" y="186">LAHAINALUNA RD</text><text x="270" y="140" style="fill:#5a606a">FRONT ST</text>
+        <text x="600" y="490">MONTS DE MAUI-OUEST ↗</text>
+        <g stroke="#858B94" stroke-width="1.5" marker-end="url(#arw)"><path d="M680 120 L590 150"/><path d="M700 230 L600 240"/><path d="M690 340 L600 320"/><path d="M640 420 L560 380"/></g>
+        <text x="560" y="96">VENTS DESCENDANTS VIOLENTS</text>
+        <g transform="translate(760,40)"><path d="M0 -14 L6 6 L0 2 L-6 6Z" fill="#858B94"/><text x="-4" y="22">N</text></g>
+        <!-- fire stages -->
+        <circle class="fz" data-from="1" data-to="1" cx="458" cy="204" r="13" fill="url(#fireG)"/>
+        <circle class="fz" data-from="2" data-to="2" cx="458" cy="204" r="16" fill="url(#hatch)" stroke="#858B94" stroke-dasharray="3 3"/>
+        <path class="fz" data-from="3" d="M300 120 C 220 140, 120 190, 0 210 L 0 330 C 120 300, 230 290, 330 300 Z" fill="url(#smokeG)"/>
+        <circle class="fz" data-from="3" cx="458" cy="204" r="24" fill="url(#fireG)"/>
+        <path class="fz" data-from="4" d="M480 190 C 450 168, 390 172, 356 198 C 334 228, 338 270, 362 290 C 402 302, 452 262, 482 226 Z" fill="url(#fireG)" opacity=".9"/>
+        <path class="fz" data-from="5" d="M492 182 C 452 118, 362 108, 318 138 C 300 200, 312 290, 332 348 C 382 362, 452 322, 496 242 Z" fill="url(#fireG)" opacity=".85"/>
+        <g class="fz" data-from="1"><circle cx="458" cy="204" r="4" fill="#F1F1EF"/><text x="466" y="222" style="fill:#F1F1EF">DÉPART (MATIN)</text></g>
+        <g class="fz" data-from="5"><text x="200" y="420" style="fill:#FF8C42">HABITANTS RÉFUGIÉS DANS L'OCÉAN</text><path d="M300 410 L320 360" stroke="#FF8C42" marker-end="url(#arwF)"/></g>
+        <!-- AI overlays -->
+        <g class="ai" data-k="1"><circle cx="458" cy="204" r="34" fill="none" stroke="#FF8C42" stroke-width="1.5" class="dash"/><circle cx="458" cy="204" r="20" fill="none" stroke="#FF8C42" class="pulse"/><path d="M470 176 L560 60" stroke="#FF8C42" stroke-width="1"/><rect x="560" y="44" width="170" height="26" fill="#08090B" stroke="#FF8C42"/><text x="570" y="61" style="fill:#FF8C42">SAT · ANOMALIE THERMIQUE</text></g>
+        <g class="ai" data-k="2"><path d="M470 204 L 318 126 L 316 312 Z" fill="rgba(255,90,31,.09)" stroke="#FF5A1F" stroke-width="1.2" class="dash"/><path d="M400 150 Q380 210 404 272" stroke="#FF5A1F" fill="none" stroke-dasharray="2 4"/><text x="384" y="146" style="fill:#FF5A1F">+30 MIN</text><text x="300" y="330" style="fill:#FF5A1F">+60 MIN (PROJECTION)</text></g>
+        <g class="ai" data-k="3"><g transform="translate(410,166)"><circle r="26" fill="none" stroke="#F1F1EF" stroke-dasharray="2 4"/><path d="M-6 -6 L6 6 M6 -6 L-6 6" stroke="#F1F1EF" stroke-width="2"/></g><g transform="translate(398,262)"><circle r="26" fill="none" stroke="#F1F1EF" stroke-dasharray="2 4"/><path d="M-6 -6 L6 6 M6 -6 L-6 6" stroke="#F1F1EF" stroke-width="2"/></g><g transform="translate(486,246)"><circle r="26" fill="none" stroke="#F1F1EF" stroke-dasharray="2 4"/><path d="M-6 -6 L6 6 M6 -6 L-6 6" stroke="#F1F1EF" stroke-width="2"/></g><text x="500" y="270" style="fill:#F1F1EF">DRONES · FLUX VIDÉO</text></g>
+        <g class="ai" data-k="4" fill="none" stroke="#F1F1EF" stroke-width="1.5"><rect x="336" y="186" width="58" height="50"/><rect x="336" y="244" width="58" height="56"/><rect x="326" y="128" width="58" height="52"/><g stroke="none" fill="#F1F1EF" style="font-family:var(--disp);font-size:22px;font-weight:900"><text x="358" y="218" style="font-family:var(--disp);font-size:22px;fill:#F1F1EF">1</text><text x="358" y="280" style="font-family:var(--disp);font-size:22px;fill:#F1F1EF">2</text><text x="348" y="162" style="font-family:var(--disp);font-size:22px;fill:#F1F1EF">3</text></g></g>
+        <g class="ai" data-k="5"><g transform="translate(600,400)"><path d="M0 0 v-30" stroke="#F1F1EF" stroke-width="2"/><path d="M-10 -36 a14 14 0 0 1 20 0 M-18 -44 a26 26 0 0 1 36 0 M-26 -52 a38 38 0 0 1 52 0" stroke="#FF8C42" fill="none" class="blink"/></g><text x="530" y="430" style="fill:#F1F1EF">SIRÈNES · ALERTES MOBILES</text><text x="530" y="444" style="fill:#F1F1EF">RADIO · RELAIS SATELLITE</text></g>
+      </svg>
+      <span class="mono schem">Carte schématique — non à l'échelle</span>
+      <div class="legend"><span><i style="background:#FF5A1F"></i>Zone en feu</span><span><i style="background:repeating-linear-gradient(45deg,#858B94 0 1px,transparent 1px 4px);border:1px dashed #858B94"></i>Feu « maîtrisé »</span><span><i style="background:#3a404a"></i>Routes</span><span><i style="border:1px dashed #FF8C42"></i>Assistance (hypothèse)</span></div>
+    </div>
+    <div class="mapside">
+      <div class="modeswitch" role="group" aria-label="Mode d'affichage">
+        <button aria-pressed="true" data-mode="real">Situation réelle</button>
+        <button class="ai" aria-pressed="false" data-mode="ai">Et si… IA avancée</button>
+      </div>
+      <div class="tl" data-tl>
+        <button data-s="0"><span class="t">AVANT</span><span class="d">Les services météo émettent des avertissements de vents forts et de risque d'incendie. La végétation est très sèche.</span></button>
+        <button data-s="1"><span class="t">≈ 6 H 35</span><span class="d">Un feu se déclare près de Lahainaluna Road. Selon l'enquête de l'ATF, des lignes électriques remises sous tension ont enflammé la végétation.</span></button>
+        <button data-s="2"><span class="t">MATIN</span><span class="d">Le feu est annoncé maîtrisé. Les équipes quittent le secteur.</span></button>
+        <button data-s="3"><span class="t">≈ 15 H</span><span class="d">Le feu reprend au même endroit. Les rafales le poussent vers la ville, le long de la pente.</span></button>
+        <button data-s="4"><span class="t">FIN D'APRÈS-MIDI</span><span class="d">Le feu traverse les quartiers. Sirènes non déclenchées, routes bloquées ou saturées, informations fragmentaires.</span></button>
+        <button data-s="5"><span class="t">SOIR</span><span class="d">Le centre historique et Front Street brûlent. Des habitants se jettent à l'eau pour survivre. 102 personnes meurent.</span></button>
+      </div>
+      <div class="whatif">
+        <h5>Et si nous avions disposé d'une IA avancée ?</h5>
+        <button data-k="1"><b>01</b><span>L'<strong>imagerie satellitaire</strong> aurait pu signaler la reprise du feu et suivre sa progression en continu.</span></button>
+        <button data-k="2"><b>02</b><span>Des <strong>modèles prédictifs</strong> nourris par le vent mesuré auraient pu projeter les quartiers menacés dans l'heure.</span></button>
+        <button data-k="3"><b>03</b><span>Des <strong>drones</strong> auraient pu donner au commandement une vue d'ensemble que la fumée masquait au sol.</span></button>
+        <button data-k="4"><b>04</b><span>Des <strong>systèmes d'aide à la décision</strong> auraient pu proposer un ordre d'évacuation par secteur.</span></button>
+        <button data-k="5"><b>05</b><span>Des <strong>canaux d'alerte redondants</strong> auraient pu continuer à fonctionner malgré les coupures.</span></button>
+        <p class="note hyp">Hypothèse prospective. Le rapport FSRI souligne surtout des lacunes de préparation, de moyens et de coordination, que la technologie seule ne comble pas.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAS 02 -->
+<section class="case camp" id="camp" aria-labelledby="cpt">
+  <div class="case-head">
+    <div class="tag">CAS 02</div>
+    <h3 class="disp split" id="cpt">Camp Fire</h3>
+    <div class="date mono">Paradise, Californie<br>8–25 novembre 2018</div>
+  </div>
+  <div class="case-intro">
+    <p class="reveal">À 6 h 33, une ligne de transport électrique de PG&amp;E vieille de près d'un siècle provoque un feu près de Pulga, dans le canyon de la Feather River. Poussé par des vents forts, le feu saute de crête en crête et atteint Paradise, une ville de 27 000 habitants, en moins de deux heures.</p>
+    <div class="reveal"><p>Le rapport d'après-action de l'État de Californie note que la majeure partie des destructions survient dans les quatre premières heures. Les routes de la crête, peu nombreuses, se saturent ; des habitants se retrouvent piégés dans leur voiture ou dans des refuges improvisés.</p><p>L'étude du NIST, qui a croisé 2 600 observations, détaille comment la notification, l'évacuation et le trafic ont été dépassés par la vitesse du feu.</p></div>
+  </div>
+  <div class="bignums">
+    <div class="bignum"><div class="n" data-count="85">0</div><div class="l">morts civils. Le feu le plus meurtrier de l'histoire de la Californie.</div><div class="mono s">Source : CAL FIRE</div></div>
+    <div class="bignum"><div class="n" data-count="18804">0</div><div class="l">structures détruites, dont 13 696 maisons individuelles.</div><div class="mono s">Source : CAL FIRE</div></div>
+    <div class="bignum"><div class="n" data-count="4" data-suffix=" h">0</div><div class="l">C'est le temps pendant lequel la majeure partie des destructions s'est produite.</div><div class="mono s">Source : Cal OES, After Action Report</div></div>
+  </div>
+  <div class="mapmod" id="cpmod">
+    <div class="mapview">
+      <svg class="mp" id="cpmap" viewBox="0 0 800 520" role="img" aria-labelledby="cpmapt">
+        <title id="cpmapt">Carte schématique de la crête de Paradise : le feu part de Pulga au nord-est et progresse vers le sud-ouest.</title>
+        <defs>
+          <radialGradient id="fireR"><stop offset="0" stop-color="#FF8C42" stop-opacity=".9"/><stop offset=".55" stop-color="#E53935" stop-opacity=".7"/><stop offset="1" stop-color="#E53935" stop-opacity=".25"/></radialGradient>
+          <marker id="arw2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#858B94"/></marker>
+          <marker id="arwW" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#F1F1EF"/></marker>
+        </defs>
+        <rect width="800" height="520" fill="#0f1216"/>
+        <g fill="none" stroke="#191d23"><path d="M0 40 Q200 70 400 30 T800 60"/><path d="M0 120 Q200 150 400 110 T800 140"/><path d="M0 200 Q200 230 400 190 T800 220"/><path d="M0 280 Q200 310 400 270 T800 300"/><path d="M0 360 Q200 390 400 350 T800 380"/><path d="M0 440 Q200 470 400 430 T800 460"/></g>
+        <path d="M800 30 C 720 140, 680 260, 600 520" stroke="#07090c" stroke-width="30" fill="none"/>
+        <path d="M800 30 C 720 140, 680 260, 600 520" stroke="#1b2a36" stroke-width="2" fill="none"/>
+        <path d="M470 0 C 450 140, 480 300, 450 520" stroke="#07090c" stroke-width="18" fill="none"/>
+        <path d="M230 0 C 200 160, 170 330, 120 520" stroke="#07090c" stroke-width="18" fill="none"/>
+        <g id="cpgrid" fill="#1d2129"></g>
+        <path id="r-sky" d="M330 110 C 320 220, 280 330, 60 500" stroke="#3a404a" stroke-width="3" fill="none"/>
+        <path id="r-clark" d="M380 200 C 370 320, 360 420, 350 520" stroke="#3a404a" stroke-width="2" fill="none"/>
+        <path id="r-pentz" d="M420 196 C 430 300, 440 420, 470 520" stroke="#3a404a" stroke-width="2" fill="none"/>
+        <path id="r-neal" d="M300 360 C 250 420, 200 470, 150 520" stroke="#3a404a" stroke-width="2" fill="none"/>
+        <text x="60" y="470">SKYWAY → CHICO</text><text x="356" y="510">CLARK RD</text><text x="474" y="500">PENTZ RD</text><text x="150" y="505">NEAL RD</text>
+        <text x="300" y="250" class="big">PARADISE</text><text x="290" y="100">MAGALIA</text><text x="530" y="230">CONCOW</text><text x="690" y="74">PULGA</text>
+        <text x="616" y="470" style="fill:#3b5466">FEATHER RIVER</text>
+        <g stroke="#858B94" stroke-width="1.5" marker-end="url(#arw2)"><path d="M760 150 L690 210"/><path d="M640 60 L570 120"/><path d="M560 330 L490 390"/></g>
+        <text x="610" y="160">VENTS DU NORD-EST</text>
+        <g transform="translate(760,40)"><path d="M0 -14 L6 6 L0 2 L-6 6Z" fill="#858B94"/><text x="-4" y="22">N</text></g>
+        <circle class="fz" data-from="0" cx="700" cy="92" r="10" fill="url(#fireR)"/>
+        <path class="fz" data-from="1" d="M722 70 C 690 52, 620 120, 560 200 C 530 252, 560 292, 602 260 C 652 200, 722 140, 742 100 Z" fill="url(#fireR)"/>
+        <g class="fz" data-from="2" fill="url(#fireR)"><circle cx="420" cy="262" r="12"/><circle cx="402" cy="300" r="9"/><circle cx="436" cy="322" r="10"/><circle cx="380" cy="240" r="7"/></g>
+        <path class="fz" data-from="3" d="M742 90 C 700 40, 560 120, 470 190 C 410 220, 300 226, 290 300 C 300 380, 400 420, 470 360 C 560 300, 700 180, 742 90 Z" fill="url(#fireR)" opacity=".9"/>
+        <path class="fz" data-from="4" d="M752 80 C 700 30, 520 80, 400 140 C 280 180, 200 240, 210 360 C 240 440, 380 470, 470 400 C 580 320, 720 190, 752 80 Z" fill="url(#fireR)" opacity=".85"/>
+        <path class="fz" data-from="5" d="M770 60 C 700 10, 480 40, 360 110 C 220 170, 140 260, 160 400 C 200 500, 420 510, 520 420 C 640 320, 760 200, 770 60 Z" fill="none" stroke="#E53935" stroke-width="1.5" stroke-dasharray="6 4"/>
+        <g class="fz" data-from="0"><circle cx="700" cy="92" r="4" fill="#F1F1EF"/><text x="612" y="120" style="fill:#F1F1EF">6 H 33 · DÉPART</text></g>
+        <g class="fz" data-from="3"><text x="70" y="420" style="fill:#E53935">SKYWAY SATURÉE</text></g>
+        <!-- AI -->
+        <g class="ai" data-k="1" id="cpcalls"></g>
+        <g class="ai" data-k="2" fill="none" stroke="#F1F1EF" stroke-width="1.5"><path d="M400 210 h70 v70 h-70z"/><path d="M380 290 h70 v60 h-70z"/><path d="M300 200 h70 v60 h-70z"/><text x="426" y="252" style="font-family:var(--disp);font-size:22px;fill:#F1F1EF" stroke="none">1</text><text x="406" y="328" style="font-family:var(--disp);font-size:22px;fill:#F1F1EF" stroke="none">2</text><text x="326" y="238" style="font-family:var(--disp);font-size:22px;fill:#F1F1EF" stroke="none">3</text></g>
+        <g class="ai" data-k="3"><path d="M330 110 C 320 220, 280 330, 60 500" stroke="#E53935" stroke-width="5" fill="none" class="dash"/><path d="M380 200 C 370 320, 360 420, 350 520" stroke="#F1F1EF" stroke-width="5" fill="none" marker-end="url(#arwW)"/><path d="M420 196 C 430 300, 440 420, 470 520" stroke="#FF8C42" stroke-width="4" fill="none" stroke-dasharray="2 6"/><text x="384" y="440" style="fill:#F1F1EF">ITINÉRAIRE CONSEILLÉ</text><text x="450" y="420" style="fill:#FF8C42">MENACÉE</text></g>
+        <g class="ai" data-k="4"><g transform="translate(540,330)"><rect x="-4" y="-18" width="210" height="44" fill="#08090B" stroke="#FF5A1F"/><text x="6" y="-2" style="fill:#FF5A1F">MESSAGE SIMPLE · ZONE CIBLÉE</text><text x="6" y="14" style="fill:#F1F1EF">« ZONE 1 : PARTEZ PAR CLARK RD »</text></g></g>
+        <g class="ai" data-k="5"><g fill="#F1F1EF"><rect x="350" y="430" width="12" height="7"/><rect x="200" y="340" width="12" height="7"/><rect x="440" y="160" width="12" height="7"/><rect x="250" y="290" width="12" height="7"/></g><g stroke="#F1F1EF" stroke-dasharray="2 4" fill="none"><path d="M362 434 L392 300"/><path d="M212 344 L300 300"/><path d="M446 168 L420 240"/></g><text x="150" y="330" style="fill:#F1F1EF">ENGINS REPOSITIONNÉS</text></g>
+      </svg>
+      <span class="mono schem">Carte schématique — non à l'échelle</span>
+      <div class="legend"><span><i style="background:#E53935"></i>Zone en feu</span><span><i style="border:1px dashed #E53935"></i>Périmètre final</span><span><i style="background:#3a404a"></i>Routes d'évacuation</span></div>
+    </div>
+    <div class="mapside">
+      <div class="modeswitch" role="group" aria-label="Mode d'affichage">
+        <button aria-pressed="true" data-mode="real">Situation réelle</button>
+        <button class="ai" aria-pressed="false" data-mode="ai">Assistance potentielle</button>
+      </div>
+      <div class="tl" data-tl>
+        <button data-s="0"><span class="t">6 H 33</span><span class="d">Départ de feu près de Camp Creek Road, à Pulga. L'enquête CAL FIRE l'attribue à une ligne de transport de PG&amp;E.</span></button>
+        <button data-s="1"><span class="t">1RE HEURE</span><span class="d">Les vents du nord-est projettent des braises loin devant le front. Concow est touché.</span></button>
+        <button data-s="2"><span class="t">≈ 8 H</span><span class="d">Des foyers éclatent dans l'est de Paradise. Les ordres d'évacuation s'étendent zone par zone.</span></button>
+        <button data-s="3"><span class="t">MATINÉE</span><span class="d">Les quatre routes de la crête se saturent. Des habitants se réfugient dans des parkings et des espaces dégagés.</span></button>
+        <button data-s="4"><span class="t">≈ MIDI</span><span class="d">Selon CAL FIRE, la ville est considérée comme en grande partie détruite.</span></button>
+        <button data-s="5"><span class="t">25 NOV.</span><span class="d">Le feu est circonscrit : 153 336 acres (62 053 ha) brûlés, 85 morts, 18 804 structures détruites.</span></button>
+      </div>
+      <div class="whatif">
+        <h5>Où l'IA aurait pu assister les équipes</h5>
+        <button data-k="1"><b>01</b><span><strong>Analyse des signalements</strong> : regrouper des centaines d'appels pour situer le front réel, pas celui d'il y a une heure.</span></button>
+        <button data-k="2"><b>02</b><span><strong>Priorisation des zones</strong> : ordonner les évacuations selon la projection du feu et la capacité des routes.</span></button>
+        <button data-k="3"><b>03</b><span><strong>Itinéraires d'évacuation</strong> : détecter la saturation et proposer des répartitions de trafic.</span></button>
+        <button data-k="4"><b>04</b><span><strong>Messages compréhensibles</strong> : une consigne courte, ciblée par zone, avec un itinéraire.</span></button>
+        <button data-k="5"><b>05</b><span><strong>Coordination des ressources</strong> : visualiser où sont les engins et lesquels peuvent ouvrir un passage.</span></button>
+        <div class="msgcard"><span class="mono">Exemple fictif de message ciblé</span><p>ÉVACUATION IMMÉDIATE — Zone 1 (est de Paradise). Partez maintenant par Clark Road vers le sud. Évitez Pentz Road.</p></div>
+        <p class="note hyp">Hypothèse prospective : aucun outil n'aurait supprimé la contrainte des quatre routes ni la vitesse du feu.</p>
+      </div>
+    </div>
+  </div>
+  <div class="compare">
+    <div><h5 class="steel">Ce qui s'est passé — selon les rapports</h5><ul><li>Des alertes et notifications qui n'atteignent pas tous les habitants à temps.</li><li>Une connaissance de la position du front en retard sur la réalité.</li><li>Des routes en nombre limité, rapidement saturées puis coupées par le feu.</li><li>Des refuges temporaires improvisés, sans planification préalable.</li></ul></div>
+    <div><h5 class="fire">Ce qu'une assistance technologique aurait pu apporter — hypothèse</h5><ul><li>Plusieurs canaux d'alerte simultanés, ciblés par zone géographique.</li><li>Une carte du front mise à jour par satellites, caméras, drones et signalements.</li><li>Une modélisation du trafic pour étaler les départs et répartir les flux.</li><li>Des refuges identifiés et communiqués à l'avance, intégrés aux consignes.</li></ul></div>
+  </div>
+</section>
+
+<section class="sources" id="sources" aria-labelledby="srct">
+  <div><div class="mono kicker">Sources consultables</div><h3 class="disp" id="srct" style="font-size:clamp(40px,4.6vw,80px);margin-top:18px">Références du chapitre II</h3></div>
+  <ol>
+    <li><a href="https://ag.hawaii.gov/" rel="noopener" target="_blank">Procureur général d'Hawaï — rapports FSRI sur le feu de Lahaina</a> (chronologie, avril 2024 ; analyse, septembre 2024 ; recommandations)</li>
+    <li><a href="https://www.npr.org/2024/09/14/g-s1-23028/report-hawaii-officials-wildfire-warnings" rel="noopener" target="_blank">NPR — Rapport : aucune préparation malgré les avertissements</a> (sept. 2024)</li>
+    <li><a href="https://mauinow.com/2024/09/13/fire-safety-research-institute-report-no-single-cause-identified-for-deadly-lahaina-wildfire/" rel="noopener" target="_blank">Maui Now — Rapport FSRI : aucune cause unique</a> (sept. 2024)</li>
+    <li><a href="https://ibhs.org/lahaina/" rel="noopener" target="_blank">IBHS — Analyse de l'incendie de Lahaina</a></li>
+    <li><a href="https://www.caloes.ca.gov/wp-content/uploads/Preparedness/Documents/FINAL-AAR-2018-Camp-Fire-508-Clean-Copy-11.17.25.pdf" rel="noopener" target="_blank">Cal OES — 2018 Camp Fire After Action Report</a> (PDF)</li>
+    <li><a href="https://doi.org/10.6028/NIST.TN.2252" rel="noopener" target="_blank">NIST TN 2252 — Camp Fire : notification, évacuation, trafic et refuges (NETTRA)</a> (2023)</li>
+    <li><a href="https://doi.org/10.6028/NIST.TN.2135" rel="noopener" target="_blank">NIST TN 2135 — Camp Fire : chronologie de la progression</a> (2021)</li>
+    <li><a href="https://www.pbs.org/wgbh/frontline/article/camp-fire-by-the-numbers" rel="noopener" target="_blank">PBS Frontline — Camp Fire : les chiffres</a></li>
+  </ol>
+</section>
+
+<section class="statement" id="q2" aria-label="Conclusion du chapitre II">
+  <div class="st-in">
+    <h2 class="disp words">Le problème n'est pas toujours le manque de courage. Parfois, c'est le manque d'informations au bon moment.</h2>
+    <div class="st-sub mono">Fin du chapitre II</div>
+  </div>
+</section>
+
+<!-- ================= CHAPITRE III ================= -->
+<section id="ch3" class="chapter c3" aria-labelledby="ch3t">
+  <div class="ch-grid">
+    <div class="ch-num" aria-hidden="true">III</div>
+    <div>
+      <div class="mono kicker">Chapitre III</div>
+      <h2 class="disp split" id="ch3t" style="margin-top:20px">Firefighters <span class="fire">2035</span></h2>
+      <p class="lead reveal">L'intelligence artificielle au cœur des secours : une vision réaliste, construite sur des technologies qui existent déjà ou sont en test. Elle n'éteint pas de feu. Elle aide à voir plus tôt, plus loin, plus clair.</p>
+    </div>
+  </div>
+</section>
+
+<section id="today" aria-labelledby="tdt">
+  <div class="mono kicker">A. L'IA d'aujourd'hui</div>
+  <h3 class="disp split" id="tdt" style="margin-top:20px">Ce qui existe déjà.</h3>
+  <div class="status-legend"><span class="st dep">Déployé</span><span class="st rol">En déploiement</span><span class="st pil">Pilote / partiel</span><span class="st exp">Expérimental</span></div>
+  <div class="tech reveal"><span class="k">01</span><h4>Détection intelligente des incendies</h4><p>Des caméras surveillent les crêtes ; un modèle repère la fumée et alerte un opérateur, qui confirme. En Californie, le réseau ALERTCalifornia compte plus de 1 200 caméras et alimente les 21 centres de commandement de CAL FIRE. En 2024, le système a identifié 1 668 feux, dont 636 avant la création d'un événement de dispatch.<small>Sources : CAL FIRE via Santa Barbara Independent (2025) ; UC San Diego ALERTCalifornia.</small></p><div class="stc"><span class="st dep">Déployé</span></div></div>
+  <div class="tech reveal"><span class="k">02</span><h4>Analyse des images thermiques</h4><p>Caméras thermiques portables et drones thermiques sont devenus courants dans les services d'incendie. L'étape suivante, l'interprétation automatique des points chauds par l'IA, reste en évaluation.<small>L'image thermique est opérationnelle ; son analyse automatisée ne l'est pas encore partout.</small></p><div class="stc"><span class="st dep">Thermique : déployé</span><span class="st pil">Analyse IA : pilote</span></div></div>
+  <div class="tech reveal"><span class="k">03</span><h4>Détection de victimes potentielles</h4><p>Des modèles de vision repèrent des silhouettes humaines sur des images aériennes ou thermiques. Ils restent sensibles à la fumée, aux occlusions et aux faux positifs : une « victime potentielle » doit toujours être vérifiée.</p><div class="stc"><span class="st exp">Expérimental</span></div></div>
+  <div class="tech reveal"><span class="k">04</span><h4>Modélisation de la propagation</h4><p>Des simulateurs combinent relief, végétation et météo pour estimer où ira le feu dans les prochaines heures. CAL FIRE utilise par exemple l'outil Wildfire Analyst pour anticiper propagation et intensité.<small>Source : Route Fifty (2024).</small></p><div class="stc"><span class="st dep">Déployé</span></div></div>
+  <div class="tech reveal"><span class="k">05</span><h4>Surveillance de la santé des pompiers</h4><p>Capteurs portés mesurant fréquence cardiaque, température corporelle ou exposition aux fumées, pour repérer l'épuisement ou le coup de chaleur avant qu'il ne devienne un accident.</p><div class="stc"><span class="st pil">Pilote</span></div></div>
+  <div class="tech reveal"><span class="k">06</span><h4>Assistance à la prise de décision</h4><p>Des tableaux de bord qui fusionnent données et projections pour proposer des options au commandant. La recommandation est une aide : elle doit montrer ses incertitudes et ne jamais décider seule.</p><div class="stc"><span class="st pil">Pilote</span></div></div>
+  <div class="tech reveal"><span class="k">07</span><h4>Coordination des secours</h4><p>Géolocalisation des engins et dispatch assisté par ordinateur sont la norme. L'optimisation automatique des affectations, en temps réel et sur plusieurs services, reste en développement.<small>Côté espace, le premier satellite FireSat a été lancé en mars 2025, et trois satellites opérationnels en 2026 ; objectif : plus de 50 d'ici 2030.</small></p><div class="stc"><span class="st dep">Géolocalisation : déployé</span><span class="st rol">FireSat : en déploiement</span></div></div>
+</section>
+
+<section id="ecosystem" aria-labelledby="ect">
+  <canvas id="eco-canvas" aria-label="Scène 3D interactive : une ville face à un incendie et les technologies qui l'entourent"></canvas>
+  <div class="eco-head">
+    <div class="mono kicker">B. L'écosystème du futur</div>
+    <h3 class="disp" id="ect" style="margin-top:16px">Une ville.<br>Un feu. <span class="fire">Sept couches.</span></h3>
+    <p>Cliquez sur une technologie pour voir son rôle, ses données et ce qu'elle apporte. Faites glisser pour tourner autour de la scène.</p>
+  </div>
+  <div class="eco-labels" id="ecoLabels"></div>
+  <div class="eco-layers" id="ecoLayers" role="group" aria-label="Couches technologiques"></div>
+  <div class="eco-human"><div class="mono" style="color:var(--incan)">Principe</div><p style="font-size:14px;margin-top:6px;color:rgba(241,241,239,.8)">L'IA ne commande pas les pompiers. Elle assiste les responsables humains, qui gardent la décision.</p></div>
+  <aside class="eco-panel" id="ecoPanel" aria-live="polite" aria-hidden="true">
+    <button class="close" id="ecoClose">Fermer ✕</button>
+    <div id="ecoPanelBody"></div>
+  </aside>
+</section>
+
+<!-- ================= SIMULATIONS ================= -->
+<section id="sim" aria-labelledby="simt">
+  <div class="sim-head">
+    <div><div class="mono kicker">Entrer dans le futur</div><h3 class="disp split" id="simt" style="margin-top:20px">Simulations</h3></div>
+    <p class="reveal" style="color:rgba(241,241,239,.8);max-width:520px">Choisissez une situation. Suivez, étape par étape, ce que les capteurs voient, ce que l'IA recommande, et ce que les humains décident.</p>
+  </div>
+  <div class="banner" role="note"><span>▲</span>Simulation prospective : scénarios fictifs, données simulées. Aucune intervention réelle n'est représentée.</div>
+  <div class="sim-tabs" role="tablist" id="simTabs">
+    <button role="tab" aria-selected="true" data-sim="building"><b>Scénario 01</b><span>Incendie d'immeuble</span></button>
+    <button role="tab" aria-selected="false" data-sim="forest"><b>Scénario 02</b><span>Feu de forêt</span></button>
+    <button role="tab" aria-selected="false" data-sim="chem"><b>Scénario 03</b><span>Explosion industrielle</span></button>
+    <button role="tab" aria-selected="false" data-sim="mayday"><b>Scénario 04</b><span>Pompier disparu</span></button>
+  </div>
+  <div class="sim-body">
+    <div class="sim-stage"><canvas id="simCanvas"></canvas><div class="sim-hud"><span class="clk" id="simClock">T+00:00</span><span class="mono" id="simTag">SIMULATION</span></div></div>
+    <div class="sim-side">
+      <div class="sim-sit" id="simSit"></div>
+      <div class="sim-step"><span class="mono" id="simStepN">Étape 1 / 6</span><h4 id="simStepT"></h4></div>
+      <div class="sim-feed" id="simFeed" aria-live="polite"></div>
+      <div class="sim-dec"><div class="ai"><span class="mono">Recommandation IA</span><span id="simAI"></span></div><div class="hu"><span class="mono">Décision humaine</span><span id="simHU"></span></div></div>
+      <div class="sim-benefit"><span class="mono" style="color:var(--incan)">Bénéfice potentiel — </span><span id="simBN"></span></div>
+    </div>
+  </div>
+  <div class="sim-ctrl">
+    <button id="simPrev" aria-label="Étape précédente">◀ Préc.</button>
+    <button id="simPlay" aria-label="Lecture">▶ Lecture</button>
+    <button id="simNext" aria-label="Étape suivante">Suiv. ▶</button>
+    <div class="sim-steps" id="simSteps"></div>
+  </div>
+</section>
+
+<!-- ================= LIMITES ================= -->
+<section id="limits" aria-labelledby="limt">
+  <div class="lim-head">
+    <div><div class="mono kicker" style="color:var(--alerte)">Les limites</div><h3 class="disp split" id="limt" style="margin-top:20px">Ce que l'IA<br><span class="red">ne sait pas faire.</span></h3></div>
+    <p class="reveal" style="color:rgba(241,241,239,.8);max-width:520px">Une technologie de secours se juge à la façon dont elle échoue. Voici les sept fragilités à regarder en face — et la manière de les encadrer.</p>
+  </div>
+  <div class="limit reveal"><span class="k">01</span><h4>Fausses détections</h4><p>Brouillard, poussière ou reflets pris pour de la fumée ; une victime vue là où il n'y a qu'un objet chaud. Une fausse alerte mobilise des moyens, une détection manquée rassure à tort.</p><p class="fix">Validation humaine systématique, taux d'erreur mesurés et publiés.</p></div>
+  <div class="limit reveal"><span class="k">02</span><h4>Pannes matérielles</h4><p>Chaleur, eau, chocs. Un capteur défaillant n'envoie pas toujours « rien » : il envoie parfois des valeurs fausses, plus dangereuses qu'un silence.</p><p class="fix">Redondance, autotests, et procédures manuelles toujours entraînées.</p></div>
+  <div class="limit reveal"><span class="k">03</span><h4>Perte de connectivité</h4><p>Relais détruits, béton armé, réseaux saturés. Au moment où l'information compte le plus, elle peut cesser d'arriver.</p><p class="fix">Réseaux maillés locaux, mode dégradé lisible, radio indépendante.</p></div>
+  <div class="limit reveal"><span class="k">04</span><h4>Cyberattaques</h4><p>Un centre de commandement connecté est une cible. Une donnée falsifiée peut envoyer des équipes au mauvais endroit.</p><p class="fix">Segmentation, chiffrement, authentification forte, exercices de crise cyber.</p></div>
+  <div class="limit reveal"><span class="k">05</span><h4>Protection des données</h4><p>Données de santé des pompiers, localisation en continu, images de victimes : des informations sensibles qu'il faut collecter avec mesure.</p><p class="fix">Minimisation, durée de conservation limitée, cadre légal (RGPD en Europe).</p></div>
+  <div class="limit reveal"><span class="k">06</span><h4>Erreurs des modèles</h4><p>Un modèle apprend du passé. Les feux extrêmes, justement, sortent de ce qu'il a déjà vu — et c'est là qu'il se trompe le plus.</p><p class="fix">Afficher l'incertitude, jamais une projection sans sa marge d'erreur.</p></div>
+  <div class="limit reveal"><span class="k">07</span><h4>Responsabilité humaine</h4><p>Si une recommandation est suivie et qu'elle était fausse, qui en répond ? Une machine ne peut pas porter une responsabilité.</p><p class="fix">L'IA recommande, le commandant décide et signe. Chaque décision est tracée.</p></div>
+
+  <div class="degraded">
+    <div>
+      <div class="mono kicker" style="color:var(--alerte)">Démonstration</div>
+      <h4 style="margin-top:14px">Et si tout s'éteint ?</h4>
+      <p>Un bon système le dit clairement quand il ne sait plus. Coupez la connectivité pour voir ce qu'un poste de commandement devrait afficher.</p>
+      <button class="tgl" id="degBtn" aria-pressed="false">Simuler une perte de connectivité</button>
+    </div>
+    <div class="minihud" id="minihud" aria-live="polite">
+      <div class="row"><span>Flux drone D-2</span><span class="v">EN DIRECT</span><span class="stale" data-stale>PÉRIMÉ · <span>0</span> s</span></div>
+      <div class="row"><span>Capteurs bâtiment</span><span class="v">12 / 12</span><span class="stale" data-stale>PÉRIMÉ · <span>0</span> s</span></div>
+      <div class="row"><span>Position équipe B</span><span class="v">3E ÉTAGE · AILE NORD</span><span class="stale" data-stale>DERNIÈRE CONNUE · <span>0</span> s</span></div>
+      <div class="row"><span>Projection IA</span><span class="v">DISPONIBLE</span><span class="stale">SUSPENDUE</span></div>
+      <div class="fallback"><strong>Mode dégradé.</strong> Les données affichées ne sont plus fiables. Retour aux procédures : liaison radio directe, appel nominatif des équipes, points de regroupement prédéfinis. Le commandant reprend la main sans attendre le système.</div>
+    </div>
+  </div>
+</section>
+<section class="lim-quote" aria-label="Message principal">
+  <blockquote class="reveal">« L'IA peut <b>analyser</b> une situation. Mais elle ne peut pas remplacer le <b>jugement</b>, le <b>courage</b> et la <b>responsabilité</b> humaine. »</blockquote>
+</section>
+
+<!-- ================= FINALE ================= -->
+<section id="finale" aria-labelledby="fint">
+  <div class="fin-stick">
+    <div class="fin-box">
+      <svg class="fin-ff" id="finFF" viewBox="0 0 300 620" aria-hidden="true" style="--stripe:#FF8C42;--visor:#FF8C42;--led:#FF5A1F"><use href="#ff"/></svg>
+      <div class="fin-hud" id="finHUD" aria-hidden="true">
+        <span class="hudtag l" style="top:9%">Casque <b>· réalité augmentée active</b></span>
+        <span class="hudtag l" style="top:24%;margin-right:6%">Drone D-2 <b>· flux thermique reçu</b></span>
+        <span class="hudtag l" style="top:39%;margin-right:10%">Coéquipiers <b>· 2 à proximité</b></span>
+        <span class="hudtag l" style="top:54%;margin-right:4%">Centre IA <b>· recommandation en attente de validation</b></span>
+        <span class="hudtag l" style="top:69%;margin-right:12%">O₂ <b>· surveillé</b></span>
+      </div>
+    </div>
+    <div class="fin-title"><h2 class="disp words" id="fint">Le futur du sauvetage n'est pas artificiel. Il est <span class="k">intelligemment humain.</span></h2></div>
+    <div class="fin-text"><p id="finP">La technologie évolue. Les méthodes changent. Les outils deviennent plus intelligents. Mais la mission reste la même : sauver des vies.</p></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="f-grid">
+    <div><h5>À propos</h5><p>FIREFIGHTERS 2035 est un documentaire interactif prospectif. Les chapitres I et II s'appuient sur des faits sourcés ; le chapitre III et les simulations décrivent un futur plausible, pas une réalité acquise.</p><p style="margin-top:12px">Tous les visuels sont générés en temps réel par le code (WebGL, Canvas, SVG). Aucune photographie des catastrophes n'est utilisée, par respect pour les victimes et leurs proches.</p></div>
+    <div><h5>Sources — chapitre III</h5><ul>
+      <li><a href="https://www.independent.com/2025/07/16/ai-cameras-catch-fires-early/" target="_blank" rel="noopener">Santa Barbara Independent — caméras IA (2025)</a></li>
+      <li><a href="https://route-fifty.com/emerging-tech/2024/09/wildfires-burn-throughout-west-officials-are-turning-ai/399566" target="_blank" rel="noopener">Route Fifty — l'IA face aux feux (2024)</a></li>
+      <li><a href="https://muonspace.com/press/muon-space-deploys-firesat-protoflight-marking-a-major-milestone-in-global-wildfire-monitoring" target="_blank" rel="noopener">Muon Space — lancement FireSat (2025)</a></li>
+      <li><a href="https://fireandsafetyjournalamericas.com/satellites-wildfire-detection/" target="_blank" rel="noopener">Fire &amp; Safety Journal — satellites opérationnels FireSat</a></li>
+    </ul></div>
+    <div><h5>Navigation</h5><ul><li><a href="#ch1">I — Le courage humain</a></li><li><a href="#ch2">II — Les catastrophes réelles</a></li><li><a href="#ch3">III — Firefighters 2035</a></li><li><a href="#sim">Simulations</a></li><li><a href="#limits">Limites</a></li></ul></div>
+  </div>
+  <div class="giant" aria-hidden="true">FIREFIGHTERS <span>2035</span></div>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+/* =========================================================
+   FIREFIGHTERS 2035 — core
+   ========================================================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MOBILE = matchMedia('(max-width: 1000px)').matches;
+const LOW = MOBILE || (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4;
+const HAS_GSAP = typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined';
+const HAS_THREE = typeof THREE !== 'undefined';
+const COL = { F: '#FF5A1F', I: '#FF8C42', R: '#E53935', W: '#F1F1EF', A: '#858B94', C: '#111318', N: '#08090B' };
+function rgba(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`; }
+const fr = n => n.toLocaleString('fr-FR').replace(/ /g, ' ');
+const T0 = performance.now();
+
+/* ---------- split text into words ---------- */
+function splitWords(el, cls = 'w') {
+  const walk = node => {
+    Array.from(node.childNodes).forEach(ch => {
+      if (ch.nodeType === 3) {
+        const parts = ch.textContent.split(/(\s+)/);
+        const frag = document.createDocumentFragment();
+        parts.forEach(p => {
+          if (!p) return;
+          if (/^\s+$/.test(p)) { frag.appendChild(document.createTextNode(' ')); return; }
+          if (cls === 'w') {
+            const o = document.createElement('span'); o.className = 'w';
+            const i = document.createElement('span'); i.className = 'wi'; i.textContent = p;
+            o.appendChild(i); frag.appendChild(o);
+          } else {
+            const o = document.createElement('span'); o.className = 'wd'; o.textContent = p; frag.appendChild(o);
+          }
+        });
+        ch.replaceWith(frag);
+      } else if (ch.nodeType === 1 && ch.tagName !== 'BR') walk(ch);
+    });
+  };
+  walk(el);
+}
+$$('.split').forEach(el => splitWords(el, 'w'));
+$$('.words').forEach(el => splitWords(el, 'd'));
+// key words in statements
+$$('.words .wd').forEach(w => {
+  const t = w.textContent.toLowerCase().replace(/[.,?!]/g, '');
+  if (['protéger', 'risquent', 'vie', 'courage', 'informations', 'bon', 'moment'].includes(t)) w.classList.add('k');
+});
+
+/* ---------- loader ---------- */
+const loader = $('#loader');
+document.body.classList.add('loading');
+function runLoader(done) {
+  const cnt = $('#lcount'), bar = $('#lbar');
+  const dur = RM ? 300 : 1700; const s = performance.now();
+  (function step(now) {
+    const p = clamp((now - s) / dur, 0, 1); const e = 1 - Math.pow(1 - p, 3);
+    cnt.textContent = String(Math.round(e * 100)).padStart(2, '0');
+    bar.style.width = (e * 100) + '%';
+    if (p < 1) requestAnimationFrame(step);
+    else {
+      loader.classList.add('done');
+      document.body.classList.remove('loading');
+      setTimeout(() => { loader.style.display = 'none'; }, 1200);
+      done && done();
+    }
+  })(s);
+}
+
+/* ---------- clock ---------- */
+const clockEl = $('#clock');
+setInterval(() => {
+  const s = Math.floor((performance.now() - T0) / 1000);
+  clockEl.textContent = 'T+' + [s / 3600 | 0, (s / 60 | 0) % 60, s % 60].map(v => String(v).padStart(2, '0')).join(':');
+}, 1000);
+
+/* =========================================================
+   HERO / FINALE — WebGL fire scene
+   ========================================================= */
+const FX = { op: 1, dig: 0 };
+function initHero() {
+  const canvas = $('#fx');
+  if (!HAS_THREE) { canvas.style.display = 'none'; return; }
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' }); }
+  catch (e) { canvas.style.display = 'none'; return; }
+  let DPR = Math.min(window.devicePixelRatio || 1, LOW ? 1 : 1.5);
+  renderer.setPixelRatio(DPR);
+  renderer.setSize(innerWidth, innerHeight, false);
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x08090b);
+  scene.fog = new THREE.FogExp2(0x0b0b0d, 0.0105);
+  const camera = new THREE.PerspectiveCamera(40, innerWidth / innerHeight, 0.1, 900);
+  camera.position.set(0, 7, 82);
+
+  scene.add(new THREE.HemisphereLight(0x2b3039, 0x050505, 0.6));
+  const fireLight = new THREE.PointLight(0xff5a1f, 4.5, 150, 1.5); fireLight.position.set(0, 30, 12); scene.add(fireLight);
+  const fireLight2 = new THREE.PointLight(0xff8c42, 2.2, 90, 1.8); fireLight2.position.set(-8, 14, 9); scene.add(fireLight2);
+  const truckLight = new THREE.PointLight(0xe53935, 0, 50, 2); truckLight.position.set(-6, 4, 26); scene.add(truckLight);
+
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(900, 900), new THREE.MeshStandardMaterial({ color: 0x0b0c0f, roughness: .55, metalness: .4 }));
+  ground.rotation.x = -Math.PI / 2; scene.add(ground);
+
+  function winTex(hot) {
+    const c = document.createElement('canvas'); c.width = 128; c.height = 256;
+    const g = c.getContext('2d'); g.fillStyle = '#000'; g.fillRect(0, 0, 128, 256);
+    for (let y = 0; y < 16; y++) for (let x = 0; x < 6; x++) {
+      const r = Math.random(); let col = null;
+      if (hot) { if (y < 11 && r < .82) col = `rgba(255,${80 + Math.random() * 100 | 0},${20 + Math.random() * 30 | 0},${.55 + Math.random() * .45})`; else if (r < .25) col = 'rgba(255,140,66,.25)'; }
+      else if (r < .12) col = `rgba(255,${170 + Math.random() * 50 | 0},${110 + Math.random() * 40 | 0},${.18 + Math.random() * .3})`;
+      if (col) { g.fillStyle = col; g.fillRect(8 + x * 20, 6 + y * 15, 12, 9); }
+    }
+    const t = new THREE.CanvasTexture(c); return t;
+  }
+  const box = new THREE.BoxGeometry(1, 1, 1);
+  const cityMats = [0, 1, 2].map(() => new THREE.MeshStandardMaterial({ color: 0x14161b, roughness: .85, metalness: .1, emissive: 0xffffff, emissiveMap: winTex(false), emissiveIntensity: .55 }));
+  const nB = LOW ? 90 : 170;
+  for (let i = 0; i < nB; i++) {
+    let x, z;
+    if (i < nB * .8) { x = (Math.random() - .5) * 280; z = -Math.random() * 220 + 8; if (z > -18 && Math.abs(x) < 26) continue; }
+    else { x = (Math.random() < .5 ? -1 : 1) * (36 + Math.random() * 60); z = 8 + Math.random() * 46; }
+    const h = 6 + Math.pow(Math.random(), 2) * 48, w = 6 + Math.random() * 6, d = 6 + Math.random() * 6;
+    const m = new THREE.Mesh(box, cityMats[i % 3]); m.scale.set(w, h, d); m.position.set(x, h / 2, z); scene.add(m);
+  }
+  const hotMat = new THREE.MeshStandardMaterial({ color: 0x17181c, roughness: .9, emissive: 0xffffff, emissiveMap: winTex(true), emissiveIntensity: 1.2 });
+  const burning = new THREE.Mesh(box, hotMat); burning.scale.set(14, 34, 12); burning.position.set(0, 17, -2); scene.add(burning);
+  const nb = new THREE.Mesh(box, cityMats[0]); nb.scale.set(10, 22, 12); nb.position.set(-13, 11, -3); scene.add(nb);
+  const nb2 = new THREE.Mesh(box, cityMats[1]); nb2.scale.set(9, 27, 10); nb2.position.set(13, 13.5, -4); scene.add(nb2);
+
+  // trucks + light bars + searchlight cones
+  const truckMat = new THREE.MeshStandardMaterial({ color: 0x6d1410, roughness: .6, metalness: .3 });
+  const barMatR = new THREE.MeshBasicMaterial({ color: 0xe53935 }), barMatW = new THREE.MeshBasicMaterial({ color: 0xf1f1ef });
+  const bars = [];
+  const coneGeo = new THREE.ConeGeometry(6, 34, 28, 1, true); coneGeo.translate(0, -17, 0); coneGeo.rotateX(-Math.PI / 2);
+  const coneMat = new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+    uniforms: { uOp: { value: .11 } },
+    vertexShader: 'varying vec2 vUv; void main(){vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+    fragmentShader: 'varying vec2 vUv; uniform float uOp; void main(){ float a=pow(vUv.y,1.6)*uOp; gl_FragColor=vec4(vec3(1.,.93,.85)*a,a);}'
+  });
+  [[-9, 22, .35], [9, 25, -.4]].forEach(([x, z, r]) => {
+    const t = new THREE.Mesh(box, truckMat); t.scale.set(3.4, 3.2, 9); t.position.set(x, 1.8, z); t.rotation.y = r; scene.add(t);
+    const b1 = new THREE.Mesh(box, barMatR); b1.scale.set(1.2, .35, .5); b1.position.set(x - .7, 3.6, z); b1.rotation.y = r; scene.add(b1);
+    const b2 = new THREE.Mesh(box, barMatW); b2.scale.set(1.2, .35, .5); b2.position.set(x + .7, 3.6, z); b2.rotation.y = r; scene.add(b2);
+    bars.push(b1, b2);
+    const cone = new THREE.Mesh(coneGeo, coneMat); cone.position.set(x, 3.8, z); cone.lookAt(0, 20, 3); scene.add(cone);
+  });
+
+  // glow sprites (volumetric light)
+  function radialTex(stops) {
+    const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
+    const gr = g.createRadialGradient(128, 128, 0, 128, 128, 128); stops.forEach(s => gr.addColorStop(s[0], s[1]));
+    g.fillStyle = gr; g.fillRect(0, 0, 256, 256); return new THREE.CanvasTexture(c);
+  }
+  const glowTex = radialTex([[0, 'rgba(255,255,255,1)'], [.25, 'rgba(255,255,255,.45)'], [.6, 'rgba(255,255,255,.08)'], [1, 'rgba(255,255,255,0)']]);
+  const glowA = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0xff5a1f, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: .4 }));
+  glowA.scale.set(110, 110, 1); glowA.position.set(0, 28, -8); scene.add(glowA);
+  const glowB = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0xffa060, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: .3 }));
+  glowB.scale.set(36, 30, 1); glowB.position.set(0, 34, 2); scene.add(glowB);
+
+  const SCALE = () => renderer.getPixelRatio() * innerHeight / 900;
+  // fire particles
+  function makePoints(n, baseFn, vs, fs, uniforms, blending) {
+    const g = new THREE.BufferGeometry();
+    const base = new Float32Array(n * 3), seed = new Float32Array(n);
+    for (let i = 0; i < n; i++) { const b = baseFn(i); base.set(b, i * 3); seed[i] = Math.random(); }
+    g.setAttribute('position', new THREE.BufferAttribute(base, 3));
+    g.setAttribute('aSeed', new THREE.BufferAttribute(seed, 1));
+    const m = new THREE.ShaderMaterial({ uniforms, vertexShader: vs, fragmentShader: fs, transparent: true, depthWrite: false, blending });
+    const p = new THREE.Points(g, m); p.frustumCulled = false; scene.add(p); return p;
+  }
+  const U = { uTime: { value: 0 }, uScale: { value: SCALE() } };
+  const fireBase = i => i % 2 ? [Math.random() * 14 - 7, 34, Math.random() * 12 - 8] : [Math.random() * 13 - 6.5, 16 + Math.random() * 18, 4.15];
+  const fire = makePoints(LOW ? 600 : 1200, fireBase,
+    `uniform float uTime; uniform float uScale; attribute float aSeed; varying float vLife;
+     void main(){ float life=fract(uTime*(0.35+aSeed*0.55)+aSeed*7.13); vLife=life;
+       vec3 p=position; p.y+=life*(5.0+aSeed*9.0); p.x+=sin(uTime*2.3+aSeed*31.0)*life*1.4+life*life*3.5; p.z+=cos(uTime*1.7+aSeed*21.)*life*1.1+life*1.5;
+       vec4 mv=modelViewMatrix*vec4(p,1.); gl_PointSize=(1.0-life)*(9.0+aSeed*14.0)*(300.0/-mv.z)*uScale; gl_Position=projectionMatrix*mv; }`,
+    `varying float vLife; void main(){ vec2 c=gl_PointCoord-.5; float d=length(c); float a=smoothstep(.5,0.,d);
+       vec3 col=mix(vec3(1.,.9,.6),vec3(1.,.36,.08),smoothstep(0.,.45,vLife)); col=mix(col,vec3(.55,.08,.03),smoothstep(.45,1.,vLife));
+       float k=a*(1.-vLife)*.55; gl_FragColor=vec4(col*k,k); }`, U, THREE.AdditiveBlending);
+
+  const smokeTex = (() => {
+    const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d');
+    for (let i = 0; i < 26; i++) { const x = 30 + Math.random() * 68, y = 30 + Math.random() * 68, r = 14 + Math.random() * 30; const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, 'rgba(255,255,255,.22)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(0, 0, 128, 128); }
+    return new THREE.CanvasTexture(c);
+  })();
+  const smoke = makePoints(LOW ? 70 : 150, () => [Math.random() * 12 - 6, 34, Math.random() * 10 - 7],
+    `uniform float uTime; uniform float uScale; attribute float aSeed; varying float vLife; varying float vSeed;
+     void main(){ float life=fract(uTime*0.035*(0.6+aSeed)+aSeed*3.7); vLife=life; vSeed=aSeed;
+       vec3 p=position; p.y+=life*72.0; p.x+=life*life*70.0+sin(aSeed*40.+uTime*.2)*6.*life; p.z-=life*20.0;
+       vec4 mv=modelViewMatrix*vec4(p,1.); gl_PointSize=min((30.0+life*150.0)*(300.0/-mv.z)*uScale,900.0); gl_Position=projectionMatrix*mv; }`,
+    `uniform sampler2D uTex; varying float vLife; varying float vSeed; void main(){
+       vec2 uv=gl_PointCoord; float ang=vSeed*6.28; uv=mat2(cos(ang),-sin(ang),sin(ang),cos(ang))*(uv-.5)+.5;
+       vec4 t=texture2D(uTex,uv); float circ=smoothstep(.5,.18,length(gl_PointCoord-.5)); float a=t.a*circ*smoothstep(0.,.08,vLife)*(1.-vLife)*1.5;
+       vec3 col=mix(vec3(.11,.09,.08),vec3(.045,.045,.05),vLife); col+=vec3(.42,.14,.04)*(1.-smoothstep(0.,.3,vLife));
+       gl_FragColor=vec4(col,a); }`, Object.assign({ uTex: { value: smokeTex } }, U), THREE.NormalBlending);
+
+  const embers = makePoints(LOW ? 380 : 1000, () => [(Math.random() - .5) * 90, Math.random() * 20, (Math.random() - .5) * 60 + 5],
+    `uniform float uTime; uniform float uScale; attribute float aSeed; varying float vA;
+     void main(){ float life=fract(uTime*(0.05+aSeed*0.09)+aSeed*11.); vec3 p=position;
+       p.y+=life*70.0; p.x+=life*40.0+sin(uTime*(1.0+aSeed)+aSeed*50.)*3.0; p.z+=cos(uTime*.8+aSeed*20.)*2.5;
+       vA=(1.-life)*smoothstep(0.,.05,life)*(0.55+0.45*sin(uTime*9.+aSeed*80.));
+       vec4 mv=modelViewMatrix*vec4(p,1.); gl_PointSize=(1.6+aSeed*3.2)*(300.0/-mv.z)*uScale; gl_Position=projectionMatrix*mv; }`,
+    `varying float vA; void main(){ float d=length(gl_PointCoord-.5); float a=smoothstep(.5,0.,d)*vA; gl_FragColor=vec4(vec3(1.,.55,.2)*a*1.6,a); }`, U, THREE.AdditiveBlending);
+
+  // 2035 layer: drones + scan ring
+  const droneGroup = new THREE.Group(); scene.add(droneGroup);
+  const droneMat = new THREE.MeshStandardMaterial({ color: 0x1b1e24, roughness: .5, metalness: .6 });
+  const ledMat = new THREE.MeshBasicMaterial({ color: 0xff8c42 });
+  const scanGeo = new THREE.ConeGeometry(5, 22, 24, 1, true); scanGeo.translate(0, -11, 0);
+  const scanMat = new THREE.ShaderMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, uniforms: { uOp: { value: 0 } },
+    vertexShader: 'varying vec2 vUv; void main(){vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+    fragmentShader: 'varying vec2 vUv; uniform float uOp; void main(){ float a=pow(vUv.y,2.)*uOp; gl_FragColor=vec4(vec3(1.,.55,.25)*a,a);}' });
+  const drones = [];
+  for (let i = 0; i < 5; i++) {
+    const d = new THREE.Group();
+    const b = new THREE.Mesh(box, droneMat); b.scale.set(1.4, .35, 1.4); d.add(b);
+    for (let j = 0; j < 4; j++) { const a = new THREE.Mesh(box, droneMat); a.scale.set(2.6, .12, .18); a.rotation.y = j * Math.PI / 2 + Math.PI / 4; d.add(a); }
+    const led = new THREE.Mesh(box, ledMat); led.scale.set(.35, .35, .35); led.position.y = -.3; d.add(led);
+    const sc = new THREE.Mesh(scanGeo, scanMat); d.add(sc);
+    d.userData = { r: 20 + i * 4, h: 38 + (i % 3) * 5, s: .18 + i * .04, o: i * 1.3, led };
+    droneGroup.add(d); drones.push(d);
+  }
+  const ring = new THREE.Mesh(new THREE.RingGeometry(12, 12.25, 96), new THREE.MeshBasicMaterial({ color: 0xff8c42, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, depthWrite: false }));
+  ring.rotation.x = -Math.PI / 2; scene.add(ring);
+
+  // post-processing: heat haze, CA, vignette, grain, digital overlay
+  let rt = new THREE.WebGLRenderTarget(innerWidth * renderer.getPixelRatio(), innerHeight * renderer.getPixelRatio());
+  const postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  const postMat = new THREE.ShaderMaterial({
+    uniforms: { tDiffuse: { value: rt.texture }, uTime: { value: 0 }, uDigital: { value: 0 }, uHeat: { value: 1 }, uRes: { value: new THREE.Vector2(innerWidth, innerHeight) } },
+    vertexShader: 'varying vec2 vUv; void main(){vUv=uv; gl_Position=vec4(position.xy,0.,1.);}',
+    fragmentShader: `uniform sampler2D tDiffuse; uniform float uTime,uDigital,uHeat; uniform vec2 uRes; varying vec2 vUv;
+      float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+      float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
+      void main(){ vec2 uv=vUv;
+        float mask=smoothstep(.95,.35,uv.y)*smoothstep(.0,.35,uv.y)*(1.-smoothstep(.12,.42,abs(uv.x-.5)));
+        vec2 n=vec2(noise(uv*vec2(9.,16.)+vec2(0.,-uTime*1.6)),noise(uv*vec2(9.,16.)+vec2(7.,-uTime*1.3)))-.5;
+        uv+=n*.011*mask*uHeat;
+        float ca=.0012+.0025*length(vUv-.5);
+        vec3 col; col.r=texture2D(tDiffuse,uv+vec2(ca,0.)).r; col.g=texture2D(tDiffuse,uv).g; col.b=texture2D(tDiffuse,uv-vec2(ca,0.)).b;
+        if(uDigital>0.001){
+          col+=sin(vUv.y*uRes.y*1.3)*.035*uDigital;
+          vec2 g=fract(vUv*vec2(uRes.x/uRes.y,1.)*14.); float grid=(step(.988,g.x)+step(.988,g.y))*.045;
+          col+=vec3(1.,.55,.25)*grid*uDigital;
+          float sweep=smoothstep(.0,.006,abs(fract(vUv.y-uTime*.08)-.5)); col+=vec3(1.,.5,.2)*(1.-sweep)*.12*uDigital;
+        }
+        col*=smoothstep(1.15,.3,length((vUv-.5)*vec2(1.1,1.)));
+        col+=(hash(vUv*uRes+fract(uTime))-.5)*.045;
+        col*=1.15; col=clamp((col*(2.51*col+.03))/(col*(2.43*col+.59)+.14),0.,1.);
+        gl_FragColor=vec4(col,1.); }`
+  });
+  const postQuad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), postMat);
+  const postScene = new THREE.Scene(); postScene.add(postQuad);
+
+  function resize() {
+    renderer.setSize(innerWidth, innerHeight, false);
+    camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+    rt.setSize(innerWidth * renderer.getPixelRatio(), innerHeight * renderer.getPixelRatio());
+    postMat.uniforms.uRes.value.set(innerWidth, innerHeight);
+    U.uScale.value = SCALE();
+  }
+  addEventListener('resize', resize);
+
+  const mouse = { x: 0, y: 0, sx: 0, sy: 0 };
+  addEventListener('pointermove', e => { mouse.x = e.clientX / innerWidth - .5; mouse.y = e.clientY / innerHeight - .5; }, { passive: true });
+
+  const heroEl = $('#hero'), ch1El = $('#ch1'), misEl = $('#missions'), finEl = $('#finale');
+  const st = { hp: 0, fp: 0 };
+  let t = 0, last = performance.now(), slowFrames = 0, frames = 0;
+  const camPos = new THREE.Vector3(), look = new THREE.Vector3();
+
+  function frame(now) {
+    requestAnimationFrame(frame);
+    const dt = Math.min(.05, (now - last) / 1000); last = now;
+    const vh = innerHeight;
+    const hr = heroEl.getBoundingClientRect();
+    const hp = clamp(-hr.top / Math.max(1, hr.height - vh), 0, 1);
+    const a = clamp(1 - ch1El.getBoundingClientRect().top / vh, 0, 1);
+    const b = clamp(1 - misEl.getBoundingClientRect().top / vh, 0, 1);
+    const fr_ = finEl.getBoundingClientRect();
+    const fIn = clamp(1 - fr_.top / vh, 0, 1);
+    const fp = clamp(-fr_.top / Math.max(1, fr_.height - vh), 0, 1);
+    const fOut = clamp(fr_.bottom / vh, 0, 1);
+    let op = (1 - a * .55) * (1 - b);
+    op = Math.max(op, fIn * fOut);
+    FX.op = lerp(FX.op, op, RM ? 1 : .15);
+    FX.dig = lerp(FX.dig, fIn, .08);
+    canvas.style.opacity = FX.op.toFixed(3);
+    if (FX.op < .01) { canvas.style.visibility = 'hidden'; return; }
+    canvas.style.visibility = 'visible';
+
+    t += dt * (RM ? .25 : 1);
+    st.hp = lerp(st.hp, hp, RM ? 1 : .08); st.fp = lerp(st.fp, fp, RM ? 1 : .08);
+    mouse.sx = lerp(mouse.sx, mouse.x, .04); mouse.sy = lerp(mouse.sy, mouse.y, .04);
+
+    const inFin = fIn > .02;
+    if (!inFin) {
+      const e = ease(st.hp);
+      camPos.set(lerp(0, 8, e), lerp(7, 12, e), lerp(82, 46, e));
+      look.set(0, lerp(16, 21, e), -2);
+    } else {
+      const e = ease(st.fp);
+      camPos.set(lerp(-34, -10, e), lerp(9, 20, e), lerp(74, 46, e));
+      look.set(0, 22, -2);
+    }
+    camPos.x += mouse.sx * (RM ? 0 : 5); camPos.y -= mouse.sy * (RM ? 0 : 2.5);
+    camera.position.copy(camPos); camera.lookAt(look);
+
+    U.uTime.value = t;
+    const flick = .85 + Math.sin(t * 13.1) * .08 + Math.sin(t * 7.3 + 1.3) * .07 + Math.random() * .05;
+    fireLight.intensity = 4.5 * flick; fireLight2.intensity = 2.2 * (2 - flick);
+    hotMat.emissiveIntensity = .9 + (flick - .85) * 1.8;
+    glowA.material.opacity = .4 * flick; glowB.material.opacity = .28 * flick;
+    const blink = Math.sin(t * 9) > 0;
+    bars[0].material = blink ? barMatR : barMatW; bars[1].material = blink ? barMatW : barMatR;
+    bars[2].material = blink ? barMatW : barMatR; bars[3].material = blink ? barMatR : barMatW;
+    truckLight.intensity = blink ? 3 : 0;
+
+    const dg = FX.dig;
+    droneGroup.visible = dg > .02;
+    drones.forEach(d => {
+      const u = d.userData; const ang = t * u.s + u.o;
+      d.position.set(Math.cos(ang) * u.r, u.h + Math.sin(t * 1.3 + u.o) * 1.2, Math.sin(ang) * u.r - 2);
+      d.lookAt(0, d.position.y, -2); d.scale.setScalar(dg);
+      u.led.visible = Math.sin(t * 6 + u.o * 3) > -.2;
+    });
+    scanMat.uniforms.uOp.value = .22 * dg;
+    ring.material.opacity = .7 * dg; ring.position.y = 17 + Math.sin(t * .8) * 15; ring.scale.setScalar(1 + .04 * Math.sin(t * 3));
+
+    postMat.uniforms.uTime.value = t; postMat.uniforms.uDigital.value = dg;
+    renderer.setRenderTarget(rt); renderer.render(scene, camera);
+    renderer.setRenderTarget(null); renderer.render(postScene, postCam);
+
+    // adaptive quality
+    frames++; if (dt > .034) slowFrames++;
+    if (frames === 90) { if (slowFrames > 45 && renderer.getPixelRatio() > .75) { renderer.setPixelRatio(Math.max(.75, renderer.getPixelRatio() * .75)); resize(); } frames = 0; slowFrames = 0; }
+  }
+  requestAnimationFrame(frame);
+}
+
+/* =========================================================
+   Scroll choreography
+   ========================================================= */
+function initScroll() {
+  // progress bar (works without GSAP)
+  const prog = $('#progress');
+  addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    prog.style.transform = `scaleX(${clamp(scrollY / Math.max(1, h), 0, 1)})`;
+  }, { passive: true });
+
+  // counters
+  const counters = $$('[data-count]');
+  const runCount = el => {
+    if (el.dataset.done) return; el.dataset.done = 1;
+    const v = +el.dataset.count, pre = el.dataset.pre || '', suf = el.dataset.suffix || '', plus = el.dataset.plus ? '+' : '';
+    const put = n => el.innerHTML = (pre ? `<small>${pre}</small>` : '') + fr(Math.round(n)) + ((suf || plus) ? `<small>${plus}${suf.replace('%', ' %')}</small>` : '');
+    if (RM) { put(v); return; }
+    const s = performance.now(), d = 1800;
+    (function st(now) { const p = clamp((now - s) / d, 0, 1); put(v * (1 - Math.pow(1 - p, 4))); if (p < 1) requestAnimationFrame(st); })(s);
+  };
+  const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && runCount(e.target)), { threshold: .4 });
+  counters.forEach(c => io.observe(c));
+
+  // cycle nodes
+  const nodesG = $('#cynodes'); const labels = ['DÉTECTION', 'ÉVALUATION', 'DISPATCHING', 'INTERVENTION', 'COORDINATION', 'SAUVETAGE'];
+  labels.forEach((l, i) => {
+    const a = -Math.PI / 2 + i * Math.PI / 3; const x = 250 + Math.cos(a) * 200, y = 250 + Math.sin(a) * 200;
+    const lx = 250 + Math.cos(a) * 236, ly = 250 + Math.sin(a) * 236;
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g'); g.setAttribute('class', 'ring-node');
+    const anchor = Math.abs(Math.cos(a)) < .2 ? 'middle' : (Math.cos(a) > 0 ? 'start' : 'end');
+    g.innerHTML = `<circle class="dot" cx="${x}" cy="${y}" r="6" fill="#111318" stroke="#858B94"/><text x="${lx}" y="${ly + 4}" text-anchor="${anchor}">0${i + 1}</text>`;
+    nodesG.appendChild(g);
+  });
+  const setCy = i => {
+    $$('.ring-node').forEach((n, j) => { n.classList.toggle('on', j <= i); const c = n.querySelector('circle'); c.setAttribute('fill', j <= i ? '#FF5A1F' : '#111318'); c.setAttribute('r', j === i ? 9 : 6); c.setAttribute('stroke', j <= i ? '#FF5A1F' : '#858B94'); });
+    $('#cybig').textContent = '0' + (i + 1); $('#cylab').textContent = labels[i];
+    $$('#cysteps .step').forEach((s, j) => s.classList.toggle('on', j === i));
+  };
+  setCy(0);
+
+  // statements
+  const setWords = (el, p) => { const ws = el.querySelectorAll('.wd'); const n = ws.length; ws.forEach((w, i) => { w.style.opacity = clamp(p * n * 1.25 - i + 1, .1, 1); }); };
+
+  // nav
+  const navLinks = $$('.chapnav a');
+  const setNav = id => navLinks.forEach(a => a.classList.toggle('on', a.dataset.sec === id));
+
+  // finale HUD
+  const hud = $$('#finHUD .hudtag'), finP = $('#finP'), finFF = $('#finFF');
+
+  if (!HAS_GSAP) {
+    // graceful fallback: show everything, simple observers
+    $$('.statement .wd, #fint .wd').forEach(w => w.style.opacity = 1);
+    const so = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) setCy($$('#cysteps .step').indexOf(e.target)); }), { rootMargin: '-45% 0px -45% 0px' });
+    $$('#cysteps .step').forEach(s => so.observe(s));
+    return;
+  }
+  gsap.registerPlugin(ScrollTrigger);
+
+  if (RM) {
+    $$('.statement .wd, #fint .wd').forEach(w => w.style.opacity = 1);
+    hud.forEach(h => h.style.opacity = 1);
+  } else {
+    // split reveals
+    $$('.split').forEach(el => {
+      if (el.id === 'heroH1') return;
+      gsap.from(el.querySelectorAll('.wi'), { yPercent: 115, duration: 1.15, ease: 'expo.out', stagger: .045, scrollTrigger: { trigger: el, start: 'top 88%' } });
+    });
+    $$('.reveal').forEach(el => gsap.from(el, { y: 50, opacity: 0, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 90%' } }));
+    $$('.ch-num').forEach(el => gsap.fromTo(el, { yPercent: 25, opacity: 0 }, { yPercent: -10, opacity: 1, ease: 'none', scrollTrigger: { trigger: el.closest('section'), start: 'top bottom', end: 'center center', scrub: true } }));
+    $$('.bignum').forEach((el, i) => gsap.from(el, { y: 60, opacity: 0, duration: 1.1, delay: i * .08, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 90%' } }));
+
+    // hero title & silhouette
+    gsap.to('.hero-title', { yPercent: -40, opacity: 0, ease: 'none', scrollTrigger: { trigger: '#hero', start: '30% top', end: '85% bottom', scrub: true } });
+    gsap.to('#heroFF', { y: () => -innerHeight * .08, scale: 1.18, transformOrigin: '50% 100%', ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom bottom', scrub: true } });
+    gsap.to('.hero-meta,.scrollcue', { opacity: 0, ease: 'none', scrollTrigger: { trigger: '#hero', start: '10% top', end: '30% top', scrub: true } });
+
+    // statements (pinned via CSS sticky on desktop)
+    if (!MOBILE) $$('.statement').forEach(s => {
+      const h = s.querySelector('.words'); setWords(h, 0);
+      ScrollTrigger.create({ trigger: s, start: 'top top', end: 'bottom bottom', onUpdate: self => setWords(h, clamp(self.progress * 1.15, 0, 1)) });
+      gsap.fromTo(h, { scale: .94 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: s, start: 'top top', end: 'bottom bottom', scrub: true } });
+    });
+    else $$('.statement .wd').forEach(w => w.style.opacity = 1);
+
+    // finale
+    const fh = $('#fint');
+    setWords(fh, 0); hud.forEach(h => h.style.opacity = 0); finP.style.opacity = 0;
+    ScrollTrigger.create({
+      trigger: '#finale', start: 'top top', end: 'bottom bottom', onUpdate: self => {
+        const p = self.progress;
+        setWords(fh, clamp((p - .05) / .45, 0, 1));
+        hud.forEach((h, i) => { const q = clamp((p - .1 - i * .05) / .15, 0, 1); h.style.opacity = q; h.style.transform = `translateY(${(1 - q) * 14}px)`; });
+        const q2 = clamp((p - .55) / .2, 0, 1); finP.style.opacity = q2; fh.style.transform = `translateY(${-q2 * 6}vh) scale(${1 - q2 * .12})`; fh.style.opacity = 1 - q2 * .25;
+        finFF.style.transform = `scale(${1 + p * .06})`;
+      }
+    });
+  }
+  if (RM) { finP.style.opacity = 1; }
+
+  // missions horizontal
+  const mm = gsap.matchMedia();
+  mm.add('(min-width: 1001px) and (prefers-reduced-motion: no-preference)', () => {
+    const tr = $('#mtrack');
+    const tween = gsap.to(tr, { x: () => -(tr.scrollWidth - innerWidth), ease: 'none', scrollTrigger: { trigger: '#missions', pin: true, scrub: .8, end: () => '+=' + (tr.scrollWidth - innerWidth), invalidateOnRefresh: true, anticipatePin: 1 } });
+    $$('.mission').forEach(m => {
+      gsap.fromTo(m.querySelector('.art'), { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', ease: 'none', scrollTrigger: { trigger: m, containerAnimation: tween, start: 'left right', end: 'left 35%', scrub: true } });
+      gsap.from(m.querySelector('.idx'), { xPercent: 70, opacity: 0, ease: 'none', scrollTrigger: { trigger: m, containerAnimation: tween, start: 'left 90%', end: 'left 30%', scrub: true } });
+      gsap.from(m.querySelector('h4'), { x: 80, ease: 'none', scrollTrigger: { trigger: m, containerAnimation: tween, start: 'left right', end: 'left 20%', scrub: true } });
+    });
+  });
+
+  // cycle
+  $$('#cysteps .step').forEach((s, i) => ScrollTrigger.create({ trigger: s, start: 'top 55%', end: 'bottom 55%', onToggle: self => self.isActive && setCy(i) }));
+  ScrollTrigger.create({ trigger: '#cysteps', start: 'top 55%', end: 'bottom 55%', onUpdate: self => $('#cyprog').setAttribute('stroke-dashoffset', 1256.6 * (1 - self.progress)) });
+
+  // nav ranges
+  [['hero', '#hero', '#hero'], ['ch1', '#ch1', '#q1'], ['ch2', '#ch2', '#q2'], ['ch3', '#ch3', '#ecosystem'], ['sim', '#sim', '#sim'], ['limits', '#limits', '.lim-quote'], ['finale', '#finale', '#finale']]
+    .forEach(([id, a, b]) => ScrollTrigger.create({ trigger: a, endTrigger: b, start: 'top center', end: 'bottom center', onToggle: self => self.isActive && setNav(id) }));
+  setNav('hero');
+
+  addEventListener('load', () => ScrollTrigger.refresh());
+}
+
+function heroIntro() {
+  if (!HAS_GSAP || RM) return;
+  gsap.from('#heroH1 .wi', { yPercent: 115, duration: 1.4, ease: 'expo.out', stagger: .06, delay: .25 });
+  gsap.from('#heroSub', { y: 30, opacity: 0, duration: 1.4, ease: 'expo.out', delay: .9 });
+  gsap.from('#heroFF', { yPercent: 12, opacity: 0, duration: 2, ease: 'expo.out', delay: .3 });
+}
+/* =========================================================
+   Mission art — generative canvases
+   ========================================================= */
+function initMissionArt() {
+  const items = $$('canvas[data-art]').map(c => ({ c, g: c.getContext('2d'), type: c.dataset.art, vis: false, w: 0, h: 0 }));
+  const D = Math.min(devicePixelRatio || 1, 1.5);
+  const size = it => { const r = it.c.getBoundingClientRect(); it.w = r.width; it.h = r.height; it.c.width = r.width * D; it.c.height = r.height * D; };
+  const io = new IntersectionObserver(es => es.forEach(e => { const it = items.find(i => i.c === e.target); it.vis = e.isIntersecting; if (it.vis) size(it); }));
+  items.forEach(it => io.observe(it.c));
+  addEventListener('resize', () => items.forEach(it => it.vis && size(it)));
+  const fract = x => x - Math.floor(x);
+  const skyline = (g, w, h, y0) => {
+    g.fillStyle = '#060708'; g.beginPath(); g.moveTo(0, h);
+    let x = 0; let i = 0;
+    while (x < w) { const bw = 30 + fract(Math.sin(i * 91.7) * 999) * 70, bh = 40 + fract(Math.sin(i * 17.3) * 999) * (h * .35); g.lineTo(x, y0 - bh); g.lineTo(x + bw, y0 - bh); x += bw; i++; }
+    g.lineTo(w, h); g.closePath(); g.fill();
+  };
+  const D_ = {
+    fire(g, w, h, t) {
+      g.fillStyle = '#0b0b0d'; g.fillRect(0, 0, w, h);
+      const sky = g.createLinearGradient(0, h, 0, 0); sky.addColorStop(0, 'rgba(255,90,31,.45)'); sky.addColorStop(.6, 'rgba(229,57,53,.08)'); sky.addColorStop(1, 'rgba(8,9,11,0)');
+      g.fillStyle = sky; g.fillRect(0, 0, w, h);
+      g.globalCompositeOperation = 'lighter';
+      for (let i = 0; i < 220; i++) {
+        const s = i * 12.9898; const life = fract(t * .3 * (.5 + fract(s)) + fract(s * 7.1));
+        const x = w * (.1 + .8 * fract(s * 3.17)) + Math.sin(t * 2 + i) * 14 * life + life * life * 40;
+        const y = h * .98 - life * h * (.5 + .45 * fract(s * 5.3));
+        const r = (1 - life) * Math.min(w, h) * .07 * (.4 + fract(s * 9.1));
+        const gr = g.createRadialGradient(x, y, 0, x, y, r);
+        gr.addColorStop(0, `hsla(${28 + (1 - life) * 18},100%,${55 + (1 - life) * 18}%,${(1 - life) * .5})`); gr.addColorStop(1, 'hsla(15,100%,50%,0)');
+        g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill();
+      }
+      g.globalCompositeOperation = 'source-over';
+      skyline(g, w, h, h * 1.02);
+    },
+    search(g, w, h, t) {
+      g.fillStyle = '#0b0c0f'; g.fillRect(0, 0, w, h);
+      g.strokeStyle = 'rgba(241,241,239,.06)'; g.lineWidth = 1;
+      for (let x = 0; x < w; x += 32) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke(); }
+      for (let y = 0; y < h; y += 32) { g.beginPath(); g.moveTo(0, y); g.lineTo(w, y); g.stroke(); }
+      const cx = w * .45, cy = h * .55, R = Math.max(w, h) * .7, a = t * .9;
+      for (let r = 60; r < R; r += 70) { g.strokeStyle = 'rgba(241,241,239,.1)'; g.beginPath(); g.arc(cx, cy, r, 0, 7); g.stroke(); }
+      for (let i = 0; i < 40; i++) { const aa = a - i * .018; g.strokeStyle = `rgba(255,90,31,${.35 * (1 - i / 40)})`; g.beginPath(); g.moveTo(cx, cy); g.lineTo(cx + Math.cos(aa) * R, cy + Math.sin(aa) * R); g.stroke(); }
+      [[.2, .3], [.7, .25], [.62, .78], [.3, .8], [.85, .55]].forEach(([px, py], i) => {
+        const x = w * px, y = h * py; const ang = Math.atan2(y - cy, x - cx);
+        let d = ((a - ang) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2); const v = Math.max(0, 1 - d / 2.4);
+        g.fillStyle = `rgba(255,140,66,${v})`; g.beginPath(); g.arc(x, y, 5, 0, 7); g.fill();
+        g.strokeStyle = `rgba(255,140,66,${v * .6})`; g.beginPath(); g.arc(x, y, 5 + (1 - v) * 22, 0, 7); g.stroke();
+        if (v > .2) { g.fillStyle = `rgba(241,241,239,${v})`; g.font = '10px JetBrains Mono, monospace'; g.fillText('SIGNAL ' + (i + 1), x + 10, y - 8); }
+      });
+    },
+    road(g, w, h, t) {
+      g.fillStyle = '#09090b'; g.fillRect(0, 0, w, h);
+      const vx = w * .5, vy = h * .4;
+      g.fillStyle = '#121317'; g.beginPath(); g.moveTo(vx - 4, vy); g.lineTo(vx + 4, vy); g.lineTo(w * 1.1, h); g.lineTo(-w * .1, h); g.fill();
+      for (let i = 0; i < 12; i++) {
+        const z = fract(i / 12 + t * .35); const p = z * z;
+        const y1 = vy + (h - vy) * p, y2 = vy + (h - vy) * Math.min(1, (z + .03) * (z + .03));
+        g.strokeStyle = `rgba(241,241,239,${.15 + p * .6})`; g.lineWidth = 1 + p * 6; g.beginPath(); g.moveTo(vx, y1); g.lineTo(vx, y2); g.stroke();
+      }
+      const on = Math.sin(t * 10) > 0;
+      [[.2, on], [.8, !on]].forEach(([px, o]) => {
+        const x = w * px, y = h * .62; const col = o ? '229,57,53' : '241,241,239';
+        const gr = g.createRadialGradient(x, y, 0, x, y, w * .35); gr.addColorStop(0, `rgba(${col},.55)`); gr.addColorStop(1, `rgba(${col},0)`);
+        g.fillStyle = gr; g.fillRect(0, 0, w, h);
+      });
+      g.fillStyle = '#050506'; g.fillRect(w * .32, h * .62, w * .36, h * .14); g.fillRect(w * .37, h * .54, w * .24, h * .1);
+      g.fillStyle = on ? '#E53935' : '#F1F1EF'; g.fillRect(w * .43, h * .525, w * .06, 5); g.fillStyle = on ? '#F1F1EF' : '#E53935'; g.fillRect(w * .5, h * .525, w * .06, 5);
+    },
+    quake(g, w, h, t) {
+      g.fillStyle = '#0a0b0e'; g.fillRect(0, 0, w, h);
+      for (let k = 0; k < 7; k++) {
+        const y0 = h * (.12 + k * .1); g.strokeStyle = k === 3 ? 'rgba(255,90,31,.95)' : 'rgba(133,139,148,.45)'; g.lineWidth = k === 3 ? 1.6 : 1; g.beginPath();
+        for (let x = 0; x <= w; x += 3) {
+          const u = x / w * 30 - t * 4 + k * 3; const burst = Math.exp(-Math.pow(((x / w + t * .13 + k * .07) % 1) - .5, 2) * 60);
+          const y = y0 + Math.sin(u * 3.1) * Math.sin(u * .7) * (2 + burst * (k === 3 ? 34 : 12));
+          x ? g.lineTo(x, y) : g.moveTo(x, y);
+        }
+        g.stroke();
+      }
+      const lvl = h * (.86 - .05 * (Math.sin(t * .4) * .5 + .5));
+      const gr = g.createLinearGradient(0, lvl, 0, h); gr.addColorStop(0, 'rgba(133,139,148,.35)'); gr.addColorStop(1, 'rgba(133,139,148,.05)');
+      g.fillStyle = gr; g.beginPath(); g.moveTo(0, h);
+      for (let x = 0; x <= w; x += 6) g.lineTo(x, lvl + Math.sin(x * .03 + t * 2) * 4);
+      g.lineTo(w, h); g.fill();
+    },
+    hazmat(g, w, h, t) {
+      g.fillStyle = '#0a0b0e'; g.fillRect(0, 0, w, h);
+      g.strokeStyle = 'rgba(241,241,239,.05)';
+      const s = 26; for (let y = 0; y < h + s; y += s * 1.5) for (let x = 0; x < w + s; x += s * 1.732) {
+        const ox = (Math.round(y / (s * 1.5)) % 2) * s * .866; g.beginPath();
+        for (let i = 0; i < 6; i++) { const a = Math.PI / 3 * i + Math.PI / 6; g.lineTo(x + ox + Math.cos(a) * s * .55, y + Math.sin(a) * s * .55); } g.closePath(); g.stroke();
+      }
+      const sx = w * .22, sy = h * .62;
+      for (let i = 0; i < 260; i++) {
+        const q = i * 7.77; const life = fract(t * .08 + fract(q)); const spread = life * h * .35;
+        const x = sx + life * w * .85, y = sy - life * h * .1 + Math.sin(q * 3) * spread * .5;
+        g.fillStyle = `rgba(255,140,66,${(1 - life) * .5})`; g.beginPath(); g.arc(x, y, 1.5 + life * 3, 0, 7); g.fill();
+      }
+      g.save(); g.translate(sx, sy); g.rotate(Math.PI / 4); g.strokeStyle = '#E53935'; g.lineWidth = 2; g.strokeRect(-28, -28, 56, 56); g.restore();
+      g.fillStyle = '#E53935'; g.font = '700 22px JetBrains Mono, monospace'; g.textAlign = 'center'; g.fillText('!', sx, sy + 8); g.textAlign = 'left';
+      const pr = (t * 30) % 140; g.strokeStyle = `rgba(229,57,53,${1 - pr / 140})`; g.beginPath(); g.arc(sx, sy, 40 + pr, 0, 7); g.stroke();
+    },
+    pulse(g, w, h, t) {
+      g.fillStyle = 'rgba(10,11,14,1)'; g.fillRect(0, 0, w, h);
+      g.strokeStyle = 'rgba(241,241,239,.05)'; for (let x = 0; x < w; x += 20) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke(); } for (let y = 0; y < h; y += 20) { g.beginPath(); g.moveTo(0, y); g.lineTo(w, y); g.stroke(); }
+      const ecg = u => { u = fract(u); if (u < .1) return Math.sin(u / .1 * Math.PI) * .08; if (u < .18) return 0; if (u < .2) return -.12; if (u < .23) return 1; if (u < .26) return -.3; if (u < .4) return 0; if (u < .52) return Math.sin((u - .4) / .12 * Math.PI) * .18; return 0; };
+      const cy = h * .55, A = h * .3, head = fract(t * .25) * w;
+      g.lineWidth = 2; g.lineJoin = 'round';
+      for (let x = 0; x < w; x += 2) {
+        const age = ((head - x) + w) % w / w; if (age > .85) continue;
+        const y = cy - ecg(x / w * 3) * A; const y2 = cy - ecg((x + 2) / w * 3) * A;
+        g.strokeStyle = `rgba(255,90,31,${1 - age})`; g.beginPath(); g.moveTo(x, y); g.lineTo(x + 2, y2); g.stroke();
+      }
+      const hy = cy - ecg(head / w * 3) * A; g.fillStyle = '#F1F1EF'; g.beginPath(); g.arc(head, hy, 3.5, 0, 7); g.fill();
+      const gr = g.createRadialGradient(head, hy, 0, head, hy, 60); gr.addColorStop(0, 'rgba(255,140,66,.4)'); gr.addColorStop(1, 'rgba(255,140,66,0)'); g.fillStyle = gr; g.fillRect(head - 60, hy - 60, 120, 120);
+    }
+  };
+  let t = 0, last = performance.now();
+  (function loop(now) {
+    requestAnimationFrame(loop);
+    const dt = Math.min(.05, (now - last) / 1000); last = now; t += dt * (RM ? .2 : 1);
+    items.forEach(it => { if (!it.vis || !it.w) return; it.g.setTransform(D, 0, 0, D, 0, 0); D_[it.type](it.g, it.w, it.h, t); });
+  })(last);
+}
+
+/* =========================================================
+   Case studies — maps
+   ========================================================= */
+function initCases() {
+  const NS = 'http://www.w3.org/2000/svg';
+  const rnd = (a => () => (a = (a * 9301 + 49297) % 233280) / 233280)(7);
+  // Lahaina town grid
+  const lg = $('#lhgrid');
+  for (let y = 118; y < 344; y += 12) for (let x = 324; x < 440; x += 12) {
+    const coast = 318 + Math.sin((y - 120) / 70) * 6 + (y > 300 ? (y - 300) * .3 : 0);
+    if (x < coast + 6 || rnd() < .25) continue;
+    const r = document.createElementNS(NS, 'rect'); r.setAttribute('x', x); r.setAttribute('y', y); r.setAttribute('width', 8); r.setAttribute('height', 8); lg.appendChild(r);
+  }
+  // Paradise / Magalia grid
+  const cg = $('#cpgrid');
+  const addGrid = (x0, x1, y0, y1, cx, cy, rx, ry) => { for (let y = y0; y < y1; y += 11) for (let x = x0; x < x1; x += 11) { if (((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 > 1 || rnd() < .3) continue; const r = document.createElementNS(NS, 'rect'); r.setAttribute('x', x); r.setAttribute('y', y); r.setAttribute('width', 7); r.setAttribute('height', 7); cg.appendChild(r); } };
+  addGrid(220, 450, 180, 420, 335, 300, 115, 120); addGrid(260, 390, 70, 190, 325, 130, 65, 58);
+  // Camp calls overlay
+  const calls = $('#cpcalls');
+  for (let i = 0; i < 70; i++) { const a = rnd() * 6.28, r = Math.sqrt(rnd()); const x = 440 + Math.cos(a) * r * 70, y = 270 + Math.sin(a) * r * 60; const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', 2.2); c.setAttribute('fill', '#F1F1EF'); calls.appendChild(c); }
+  calls.insertAdjacentHTML('beforeend', '<circle cx="440" cy="270" r="80" fill="none" stroke="#F1F1EF" stroke-dasharray="3 4"/><text x="520" y="200" style="fill:#F1F1EF">SIGNALEMENTS REGROUPÉS</text><text x="520" y="214" style="fill:#858B94">FRONT ESTIMÉ EN TEMPS RÉEL</text>');
+
+  $$('.mapmod').forEach(mod => {
+    const btns = $$('.tl button', mod), fz = $$('.fz', mod.querySelector('svg')), ais = $$('.ai', mod.querySelector('svg'));
+    let stage = -1, user = false, timer = null;
+    const set = s => {
+      stage = s;
+      fz.forEach(el => { const f = +el.dataset.from, to = el.dataset.to != null ? +el.dataset.to : 99; el.style.opacity = (s >= f && s <= to) ? 1 : 0; });
+      btns.forEach((b, i) => b.setAttribute('aria-current', i === s ? 'true' : 'false'));
+    };
+    set(0);
+    btns.forEach((b, i) => b.addEventListener('click', () => { user = true; clearInterval(timer); set(i); }));
+    // auto-play through the timeline once when in view
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting && !user && !timer) { timer = setInterval(() => { if (user || mod.classList.contains('assist')) return clearInterval(timer); if (stage >= btns.length - 1) return clearInterval(timer); set(stage + 1); }, RM ? 1200 : 2300); }
+    }), { threshold: .45 });
+    io.observe(mod);
+    // mode switch
+    $$('.modeswitch button', mod).forEach(b => b.addEventListener('click', () => {
+      const ai = b.dataset.mode === 'ai';
+      mod.classList.toggle('assist', ai);
+      $$('.modeswitch button', mod).forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+      user = true; clearInterval(timer);
+      set(ai ? Math.min(btns.length - 2, 4) : stage);
+    }));
+    // what-if highlight
+    let lock = null;
+    const hl = k => ais.forEach(a => a.classList.toggle('dim', k != null && a.dataset.k !== k));
+    $$('.whatif button', mod).forEach(b => {
+      b.addEventListener('mouseenter', () => hl(b.dataset.k)); b.addEventListener('focus', () => hl(b.dataset.k));
+      b.addEventListener('mouseleave', () => hl(lock)); b.addEventListener('blur', () => hl(lock));
+      b.addEventListener('click', () => { lock = lock === b.dataset.k ? null : b.dataset.k; $$('.whatif button', mod).forEach(x => x.classList.toggle('on', x.dataset.k === lock)); hl(lock); });
+    });
+  });
+}
+
+/* =========================================================
+   Ecosystem — interactive 3D city
+   ========================================================= */
+const ECO = {
+  drones: { n: '01', title: 'Drones intelligents', role: "Survoler la zone, voir à travers la fumée et transmettre en temps réel ce que les équipes au sol ne peuvent pas voir.", data: ['Caméras thermiques', 'Détection de points chauds', 'Localisation de victimes potentielles', 'Surveillance aérienne', 'Vidéo en temps réel'], contrib: "Une vue d'ensemble immédiate pour le commandant : où est le feu, où il va, où pourraient se trouver des personnes.", today: "Aujourd'hui : les drones thermiques sont déjà utilisés par de nombreux services d'incendie. L'analyse automatique de leurs images par l'IA est en évaluation.", feed: ['D-2 · ALT 60 M · THERMIQUE', 'POINT CHAUD · TOIT AILE EST', 'SILHOUETTE · 3E ÉTAGE · À CONFIRMER'] },
+  sat: { n: '02', title: 'Satellites', role: "Surveiller de vastes territoires et repérer les anomalies thermiques, même là où personne ne regarde.", data: ['Surveillance à grande échelle', 'Anomalies thermiques', 'Données météorologiques', 'Progression des feux'], contrib: "L'alerte précoce et la vue régionale : savoir qu'un feu démarre, et comment il évolue à l'échelle d'un massif.", today: "Aujourd'hui : FireSat (Earth Fire Alliance) — un premier satellite lancé en mars 2025, trois satellites opérationnels en 2026, plus de 50 visés d'ici 2030 pour détecter des feux de 5 × 5 m.", feed: ['ANOMALIE THERMIQUE · NOUVELLE', 'TAILLE ESTIMÉE · < 10 M', 'VENT · E-NE · RAFALES FORTES'] },
+  robots: { n: '03', title: 'Robots de sauvetage', role: "Entrer là où l'on ne peut pas envoyer d'humains : structures instables, chaleur extrême, atmosphères toxiques.", data: ['Exploration des milieux dangereux', 'Caméras thermiques', 'Capteurs environnementaux', 'Lance à eau télécommandée'], contrib: "Réduire l'exposition des pompiers dans les zones les plus risquées, en gardant un opérateur humain aux commandes.", today: "Aujourd'hui : des robots terrestres télécommandés existent déjà ; la Brigade de sapeurs-pompiers de Paris a ainsi utilisé le robot Colossus lors de l'incendie de Notre-Dame en 2019.", feed: ['R-1 · NIVEAU 0 · COULOIR NORD', 'T° AMBIANTE · TRÈS ÉLEVÉE', 'GAZ · CO EN HAUSSE'] },
+  helmets: { n: '04', title: 'Casques intelligents', role: "Afficher l'essentiel dans le champ de vision, sans obliger le pompier à lâcher sa lance ni sa radio.", data: ['Réalité augmentée', 'Informations thermiques', 'Localisation des coéquipiers', "Niveau d'oxygène", 'Alertes de sécurité'], contrib: "Moins d'informations, mais les bonnes : une sortie, un coéquipier, une alerte. Le reste peut attendre.", today: "Aujourd'hui : des prototypes à affichage tête haute et caméra thermique existent ; leur usage opérationnel reste expérimental.", feed: ['B1 · O₂ SURVEILLÉ', 'COÉQUIPIER B2 · 6 M · DERRIÈRE', 'SORTIE · ESCALIER A · 18 M'] },
+  command: { n: '05', title: 'Centre de commandement IA', role: "Fusionner toutes les sources en une seule carte, et proposer des options — jamais décider à la place du commandant.", data: ['Fusion des données', 'Analyse des risques', 'Visualisation cartographique', 'Recommandations opérationnelles', 'Coordination des ressources'], contrib: "Une seule image partagée de la situation, avec ses incertitudes, pour que chacun travaille sur la même carte.", today: "Aujourd'hui : les outils de dispatch assisté et de cartographie partagée sont en service ; l'aide à la décision par IA est en phase pilote.", feed: ['SOURCES ACTIVES · 7', 'PROJECTION +30 MIN · CONFIANCE MOYENNE', 'RECOMMANDATION · EN ATTENTE DE VALIDATION'] },
+  sensors: { n: '06', title: 'Capteurs au sol', role: "Mesurer en continu température, fumée et gaz, et prévenir avant que la situation ne bascule.", data: ['Température', 'Fumées et gaz', 'Humidité du combustible', 'Intégrité structurelle'], contrib: "Des mesures fiables là où la caméra ne voit rien, et un signal précoce de danger pour les équipes engagées.", today: "Aujourd'hui : capteurs fixes dans les bâtiments et stations météo en forêt ; les réseaux de capteurs connectés à grande échelle sont en pilote.", feed: ['C-07 · T° 410 °C (SIMULÉ)', 'C-03 · FUMÉE DENSE', 'C-11 · HORS LIGNE'] },
+  crews: { n: '07', title: 'Équipes de pompiers', role: "Les seuls à entrer dans le feu. Toutes les couches précédentes n'existent que pour elles.", data: ['Informations filtrées et utiles', 'Consignes du commandement', 'Position partagée', 'Alertes de sécurité'], contrib: "Des décisions de terrain mieux informées. Le jugement, l'expérience et le courage restent humains.", today: "Principe : l'IA assiste les responsables humains, qui conservent le pouvoir de décision et la responsabilité.", feed: ['ÉQUIPE B · ENGAGÉE · 3E ÉTAGE', 'ÉQUIPE C · EN RÉSERVE', 'CHEF DE COLONNE · DÉCISION VALIDÉE'] }
+};
+const ECO_ORDER = ['drones', 'sat', 'robots', 'helmets', 'command', 'sensors', 'crews'];
+
+function initEco() {
+  const sec = $('#ecosystem'), canvas = $('#eco-canvas');
+  const headEl = $('.eco-head'); const labelsEl = $('#ecoLabels'), layersEl = $('#ecoLayers'), panel = $('#ecoPanel'), body = $('#ecoPanelBody');
+  const openPanel = k => {
+    const d = ECO[k];
+    body.innerHTML = `<div class="pn">${d.n}</div><h4>${d.title}</h4><p style="color:rgba(241,241,239,.85)">${d.role}</p>
+      <h6>Données</h6><ul>${d.data.map(x => `<li>${x}</li>`).join('')}</ul>
+      <h6>Contribution à l'intervention</h6><p class="today">${d.contrib}</p>
+      <h6>Flux — valeurs simulées</h6><div class="feed">${d.feed.map(x => '› ' + x).join('<br>')}</div>
+      <h6>Réalité 2025–2026</h6><p class="today">${d.today}</p>`;
+    panel.classList.add('open'); panel.setAttribute('aria-hidden', 'false');
+    $$('.eco-label', labelsEl).forEach(l => l.classList.toggle('on', l.dataset.k === k));
+    focusKey && focusKey(k);
+  };
+  const closePanel = () => { panel.classList.remove('open'); panel.setAttribute('aria-hidden', 'true'); $$('.eco-label', labelsEl).forEach(l => l.classList.remove('on')); focusKey && focusKey(null); };
+  $('#ecoClose').addEventListener('click', closePanel);
+  addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+
+  // labels + layer toggles (DOM works even without WebGL)
+  const labels = {};
+  ECO_ORDER.forEach(k => {
+    const b = document.createElement('button'); b.className = 'eco-label'; b.dataset.k = k; b.innerHTML = `<i></i>${ECO[k].n} · ${ECO[k].title}`;
+    b.addEventListener('click', () => openPanel(k)); labelsEl.appendChild(b); labels[k] = b;
+    const t = document.createElement('button'); t.setAttribute('aria-pressed', 'true'); t.textContent = ECO[k].title; t.dataset.k = k;
+    layersEl.appendChild(t);
+  });
+
+  let focusKey = null;
+  if (!HAS_THREE) { ECO_ORDER.forEach((k, i) => { labels[k].style.transform = `translate(${40 + (i % 4) * 22}vw, ${30 + Math.floor(i / 4) * 10}vh)`; }); return; }
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: !LOW, powerPreference: 'high-performance' }); } catch (e) { return; }
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, LOW ? 1 : 1.5));
+  const scene = new THREE.Scene(); scene.background = new THREE.Color(0x07080a); scene.fog = new THREE.Fog(0x07080a, 120, 300);
+  const camera = new THREE.PerspectiveCamera(36, 1, .1, 1000);
+  scene.add(new THREE.HemisphereLight(0x3a404a, 0x050505, .9));
+  const dl = new THREE.DirectionalLight(0xf1f1ef, .45); dl.position.set(-40, 80, 30); scene.add(dl);
+  const fireL = new THREE.PointLight(0xff5a1f, 3.5, 70, 1.4); fireL.position.set(14, 10, 0); scene.add(fireL);
+
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), new THREE.MeshStandardMaterial({ color: 0x0b0c0f, roughness: .95 }));
+  ground.rotation.x = -Math.PI / 2; scene.add(ground);
+  const grid = new THREE.GridHelper(400, 100, 0x1b1e24, 0x121419); grid.position.y = .02; scene.add(grid);
+
+  // city instanced
+  const box = new THREE.BoxGeometry(1, 1, 1);
+  const cityMat = new THREE.MeshStandardMaterial({ color: 0x171a20, roughness: .8, metalness: .15 });
+  const N = 9; const cells = [];
+  for (let i = -N; i <= N; i++) for (let j = -N; j <= N; j++) {
+    const x = i * 9, z = j * 9; if (Math.hypot(x - 14, z) < 9) continue; if (Math.hypot(x + 30, z - 28) < 12) continue;
+    if (Math.random() < .12) continue; cells.push([x, z]);
+  }
+  const inst = new THREE.InstancedMesh(box, cityMat, cells.length); const m4 = new THREE.Matrix4();
+  cells.forEach(([x, z], i) => { const d = Math.hypot(x, z); const h = 1.5 + Math.random() * (d < 30 ? 4 : d < 70 ? 11 : 7); m4.compose(new THREE.Vector3(x, h / 2, z), new THREE.Quaternion(), new THREE.Vector3(6, h, 6)); inst.setMatrixAt(i, m4); });
+  scene.add(inst);
+
+  const groups = {}; const pick = [];
+  const G = k => { const g = new THREE.Group(); g.userData.key = k; scene.add(g); groups[k] = g; return g; };
+  const mark = (mesh, k) => { mesh.userData.key = k; pick.push(mesh); return mesh; };
+
+  // burning block
+  const hot = new THREE.MeshStandardMaterial({ color: 0x1a1a1d, emissive: 0xff5a1f, emissiveIntensity: .7 });
+  [[12, 0, 10], [17, -3, 7], [13, 4, 6]].forEach(([x, z, h]) => { const b = new THREE.Mesh(box, hot); b.scale.set(5, h, 5); b.position.set(x, h / 2, z); scene.add(b); });
+  const glowTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d'); const gr = g.createRadialGradient(64, 64, 0, 64, 64, 64); gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(.4, 'rgba(255,255,255,.25)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c); })();
+  const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0xff5a1f, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: .8 })); glow.scale.set(46, 46, 1); glow.position.set(14, 10, 0); scene.add(glow);
+  // fire particles
+  const nP = LOW ? 300 : 700; const pg = new THREE.BufferGeometry(); const pp = new Float32Array(nP * 3), ps = new Float32Array(nP);
+  for (let i = 0; i < nP; i++) { pp.set([14 + (Math.random() - .5) * 10, 4 + Math.random() * 6, (Math.random() - .5) * 10], i * 3); ps[i] = Math.random(); }
+  pg.setAttribute('position', new THREE.BufferAttribute(pp, 3)); pg.setAttribute('aSeed', new THREE.BufferAttribute(ps, 1));
+  const pU = { uTime: { value: 0 }, uS: { value: 1 } };
+  const pts = new THREE.Points(pg, new THREE.ShaderMaterial({ uniforms: pU, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    vertexShader: `uniform float uTime,uS; attribute float aSeed; varying float vL; void main(){ float l=fract(uTime*(.4+aSeed*.5)+aSeed*9.); vL=l; vec3 p=position; p.y+=l*(8.+aSeed*10.); p.x+=l*l*6.; vec4 mv=modelViewMatrix*vec4(p,1.); gl_PointSize=(1.-l)*(10.+aSeed*14.)*(260./-mv.z)*uS; gl_Position=projectionMatrix*mv; }`,
+    fragmentShader: `varying float vL; void main(){ float a=smoothstep(.5,0.,length(gl_PointCoord-.5))*(1.-vL); vec3 c=mix(vec3(1.,.8,.5),vec3(1.,.3,.08),vL); gl_FragColor=vec4(c*a,a);} ` }));
+  pts.frustumCulled = false; scene.add(pts);
+
+  const steel = new THREE.MeshStandardMaterial({ color: 0x858b94, roughness: .4, metalness: .7 });
+  const dark = new THREE.MeshStandardMaterial({ color: 0x1d2027, roughness: .5, metalness: .5 });
+  const orange = new THREE.MeshBasicMaterial({ color: 0xff8c42 });
+  const white = new THREE.MeshBasicMaterial({ color: 0xf1f1ef });
+  const red = new THREE.MeshStandardMaterial({ color: 0x8e1b15, roughness: .6 });
+  const beamMat = (c, o) => new THREE.ShaderMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, uniforms: { uC: { value: new THREE.Color(c) }, uO: { value: o } },
+    vertexShader: 'varying vec2 vUv; void main(){vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+    fragmentShader: 'uniform vec3 uC; uniform float uO; varying vec2 vUv; void main(){ float a=pow(vUv.y,1.5)*uO; gl_FragColor=vec4(uC*a,a);}' });
+
+  // satellite
+  const satG = G('sat'); const sat = new THREE.Group(); satG.add(sat);
+  sat.add(mark(new THREE.Mesh(box, dark), 'sat')); sat.children[0].scale.set(3, 3, 4.5);
+  [-1, 1].forEach(s => { const p = mark(new THREE.Mesh(box, steel), 'sat'); p.scale.set(9, .2, 3.4); p.position.x = s * 6.2; sat.add(p); });
+  const satBeamGeo = new THREE.ConeGeometry(1, 1, 24, 1, true); satBeamGeo.translate(0, -.5, 0);
+  const satBeam = new THREE.Mesh(satBeamGeo, beamMat(0xff8c42, .18)); satG.add(satBeam);
+
+  // drones
+  const drG = G('drones'); const drones = [];
+  const dGeo = new THREE.ConeGeometry(4, 14, 20, 1, true); dGeo.translate(0, -7, 0);
+  for (let i = 0; i < 3; i++) {
+    const d = new THREE.Group();
+    const b = mark(new THREE.Mesh(box, dark), 'drones'); b.scale.set(1.6, .4, 1.6); d.add(b);
+    for (let j = 0; j < 2; j++) { const a = mark(new THREE.Mesh(box, steel), 'drones'); a.scale.set(3.6, .12, .25); a.rotation.y = j * Math.PI / 2 + Math.PI / 4; d.add(a); }
+    const l = new THREE.Mesh(box, orange); l.scale.setScalar(.4); l.position.y = -.35; d.add(l);
+    d.add(new THREE.Mesh(dGeo, beamMat(0xff5a1f, .25)));
+    d.userData = { r: 10 + i * 4, h: 18 + i * 3, s: .35 + i * .12, o: i * 2.1 }; drG.add(d); drones.push(d);
+  }
+  // sensors
+  const seG = G('sensors'); const rings = [];
+  [[2, -8], [24, -8], [26, 8], [4, 10], [14, -14], [16, 14]].forEach(([x, z]) => {
+    const c = mark(new THREE.Mesh(new THREE.CylinderGeometry(.35, .5, 3, 8), steel), 'sensors'); c.position.set(x, 1.5, z); seG.add(c);
+    const tip = new THREE.Mesh(box, orange); tip.scale.setScalar(.6); tip.position.set(x, 3.2, z); seG.add(tip);
+    const r = new THREE.Mesh(new THREE.RingGeometry(.9, 1.1, 40), new THREE.MeshBasicMaterial({ color: 0xff8c42, transparent: true, side: THREE.DoubleSide, depthWrite: false })); r.rotation.x = -Math.PI / 2; r.position.set(x, .1, z); seG.add(r); rings.push(r);
+  });
+  // robot
+  const roG = G('robots'); const robot = new THREE.Group(); roG.add(robot);
+  const rb = mark(new THREE.Mesh(box, dark), 'robots'); rb.scale.set(3, 1.4, 2); rb.position.y = 1.2; robot.add(rb);
+  [-1, 1].forEach(s => { const tr = mark(new THREE.Mesh(box, steel), 'robots'); tr.scale.set(3.4, .9, .6); tr.position.set(0, .5, s * 1.2); robot.add(tr); });
+  const nozzle = new THREE.Mesh(box, orange); nozzle.scale.set(1.4, .3, .3); nozzle.position.set(1.8, 2.1, 0); robot.add(nozzle);
+  // crews + trucks
+  const crG = G('crews'); const heG = G('helmets'); const crew = [];
+  [[2, 14, .4], [26, 12, -.6], [4, -16, .2]].forEach(([x, z, r], i) => {
+    const tk = mark(new THREE.Mesh(box, red), 'crews'); tk.scale.set(2.6, 2.4, 6.5); tk.position.set(x, 1.3, z); tk.rotation.y = r; crG.add(tk);
+    for (let j = 0; j < 2; j++) {
+      const f = mark(new THREE.Mesh(new THREE.CylinderGeometry(.45, .45, 1.8, 10), new THREE.MeshStandardMaterial({ color: 0x2b2a26 })), 'crews');
+      f.position.set(x + 2.5 + j * 1.2, .9, z - 2 + j); crG.add(f); crew.push(f);
+      const h = mark(new THREE.Mesh(new THREE.SphereGeometry(.5, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0xff8c42 })), 'helmets');
+      h.position.set(f.position.x, 1.85, f.position.z); heG.add(h);
+      const hr = new THREE.Mesh(new THREE.RingGeometry(1.1, 1.25, 32), new THREE.MeshBasicMaterial({ color: 0xff8c42, transparent: true, opacity: .8, side: THREE.DoubleSide, depthWrite: false })); hr.rotation.x = -Math.PI / 2; hr.position.set(f.position.x, .08, f.position.z); heG.add(hr);
+    }
+  });
+  // command center
+  const coG = G('command'); const cc = new THREE.Vector3(-30, 0, 28);
+  const ccb = mark(new THREE.Mesh(box, dark), 'command'); ccb.scale.set(14, 6, 10); ccb.position.set(cc.x, 3, cc.z); coG.add(ccb);
+  const dome = mark(new THREE.Mesh(new THREE.SphereGeometry(4, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), steel), 'command'); dome.position.set(cc.x, 6, cc.z); coG.add(dome);
+  const ant = new THREE.Mesh(new THREE.CylinderGeometry(.15, .15, 10, 6), steel); ant.position.set(cc.x + 5, 11, cc.z - 3); coG.add(ant);
+  const ccRing = new THREE.Mesh(new THREE.TorusGeometry(7, .12, 8, 64), orange); ccRing.rotation.x = Math.PI / 2; ccRing.position.set(cc.x, 8, cc.z); coG.add(ccRing);
+  const ccRing2 = new THREE.Mesh(new THREE.TorusGeometry(9.5, .06, 8, 64), white); ccRing2.rotation.x = Math.PI / 2; ccRing2.position.set(cc.x, 8, cc.z); coG.add(ccRing2);
+
+  // anchors (label positions)
+  const anchors = {
+    sat: () => sat.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 4, 0)),
+    drones: () => drones[0].getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 2, 0)),
+    robots: () => robot.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 4, 0)),
+    helmets: () => new THREE.Vector3(crew[2].position.x, 4, crew[2].position.z),
+    command: () => new THREE.Vector3(cc.x, 14, cc.z),
+    sensors: () => new THREE.Vector3(24, 5, -8),
+    crews: () => new THREE.Vector3(4, 5, -16)
+  };
+  // data links: each node → command center ; command → crews
+  const links = [];
+  const mkLink = (key, fromFn, toFn, col) => {
+    const n = 40; const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(n * 3), 3));
+    const line = new THREE.Line(geo, new THREE.LineBasicMaterial({ color: col, transparent: true, opacity: .35 })); scene.add(line);
+    const pk = new THREE.Mesh(new THREE.SphereGeometry(.45, 8, 6), new THREE.MeshBasicMaterial({ color: col })); scene.add(pk);
+    links.push({ key, fromFn, toFn, line, pk, n, off: Math.random() });
+  };
+  ['sat', 'drones', 'robots', 'sensors', 'helmets'].forEach(k => mkLink(k, anchors[k], anchors.command, 0xff8c42));
+  mkLink('crews', anchors.command, anchors.crews, 0xf1f1ef);
+  mkLink('helmets', anchors.command, anchors.helmets, 0xf1f1ef);
+  const curve = new THREE.QuadraticBezierCurve3(new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3());
+
+  // layers toggle
+  const on = {}; ECO_ORDER.forEach(k => on[k] = true);
+  $$('button', layersEl).forEach(b => b.addEventListener('click', () => {
+    const k = b.dataset.k; on[k] = !on[k]; b.setAttribute('aria-pressed', on[k]); groups[k].visible = on[k]; labels[k].classList.toggle('off', !on[k]);
+  }));
+
+  // camera orbit
+  const orb = { th: .7, ph: .98, r: 135, tth: .7, tph: .98, tr: 135, tgt: new THREE.Vector3(-4, 8, 4), ttgt: new THREE.Vector3(-4, 8, 4) };
+  let drag = null, idle = 0;
+  canvas.addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY, th: orb.tth, ph: orb.tph, moved: false }; canvas.setPointerCapture(e.pointerId); });
+  canvas.addEventListener('pointermove', e => { if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; if (Math.abs(dx) + Math.abs(dy) > 4) drag.moved = true; orb.tth = drag.th - dx * .006; orb.tph = clamp(drag.ph - dy * .004, .35, 1.3); idle = 0; });
+  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+  canvas.addEventListener('pointerup', e => {
+    if (drag && !drag.moved) {
+      const r = canvas.getBoundingClientRect(); ndc.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1);
+      ray.setFromCamera(ndc, camera); const hit = ray.intersectObjects(pick.filter(p => groups[p.userData.key].visible), false)[0];
+      if (hit) openPanel(hit.object.userData.key);
+    }
+    drag = null;
+  });
+  canvas.addEventListener('pointermove', e => {
+    if (drag) return; const r = canvas.getBoundingClientRect(); ndc.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1);
+    ray.setFromCamera(ndc, camera); const hit = ray.intersectObjects(pick, false)[0]; canvas.style.cursor = hit ? 'pointer' : 'grab';
+  });
+  focusKey = k => {
+    if (!k) { orb.ttgt.set(-4, 8, 4); orb.tr = 135; return; }
+    const p = anchors[k](); orb.ttgt.copy(p).setY(Math.min(p.y, 20)); orb.tr = k === 'sat' ? 105 : 72; idle = 0;
+  };
+
+  let W = 0, H = 0;
+  const resize = () => { const r = sec.getBoundingClientRect(); W = r.width; H = r.height; renderer.setSize(W, H, false); camera.aspect = W / H; camera.updateProjectionMatrix(); pU.uS.value = renderer.getPixelRatio() * H / 900; };
+  resize(); addEventListener('resize', resize);
+  let vis = false; new IntersectionObserver(es => { vis = es[0].isIntersecting; if (vis) resize(); }).observe(sec);
+
+  let t = 0, last = performance.now(); const v = new THREE.Vector3();
+  (function loop(now) {
+    requestAnimationFrame(loop);
+    const dt = Math.min(.05, (now - last) / 1000); last = now; if (!vis) return;
+    t += dt * (RM ? .3 : 1); idle += dt;
+    if (!drag && idle > 2.5 && !panel.classList.contains('open') && !RM) orb.tth += dt * .05;
+    orb.th = lerp(orb.th, orb.tth, .06); orb.ph = lerp(orb.ph, orb.tph, .06); orb.r = lerp(orb.r, orb.tr, .05); orb.tgt.lerp(orb.ttgt, .05);
+    camera.position.set(orb.tgt.x + orb.r * Math.sin(orb.ph) * Math.cos(orb.th), orb.tgt.y + orb.r * Math.cos(orb.ph), orb.tgt.z + orb.r * Math.sin(orb.ph) * Math.sin(orb.th));
+    camera.lookAt(orb.tgt);
+
+    pU.uTime.value = t; fireL.intensity = 3.2 + Math.sin(t * 11) * .4 + Math.random() * .3;
+    sat.position.set(-4 + Math.cos(t * .08) * 22, 40, -40 + Math.sin(t * .08) * 10); sat.rotation.y = t * .1;
+    const sp = sat.position, fp = new THREE.Vector3(14, 0, 0); const len = sp.distanceTo(fp);
+    satBeam.position.copy(sp); satBeam.scale.set(7, len, 7); satBeam.lookAt(fp); satBeam.rotateX(-Math.PI / 2);
+    drones.forEach(d => { const u = d.userData, a = t * u.s + u.o; d.position.set(14 + Math.cos(a) * u.r, u.h + Math.sin(t * 2 + u.o), Math.sin(a) * u.r); d.rotation.y = -a; });
+    robot.position.set(6 + Math.sin(t * .4) * 3, 0, 5); robot.rotation.y = Math.cos(t * .4) > 0 ? 0 : Math.PI;
+    rings.forEach((r, i) => { const q = (t * .6 + i * .17) % 1; r.scale.setScalar(1 + q * 3); r.material.opacity = (1 - q) * .8; });
+    ccRing.rotation.z = t * .5; ccRing2.rotation.z = -t * .3;
+
+    links.forEach(L => {
+      const visL = groups[L.key].visible && groups.command.visible; L.line.visible = L.pk.visible = visL; if (!visL) return;
+      const a = L.fromFn(), b = L.toFn(); const mid = a.clone().add(b).multiplyScalar(.5); mid.y += a.distanceTo(b) * .3;
+      curve.v0.copy(a); curve.v1.copy(mid); curve.v2.copy(b);
+      const arr = L.line.geometry.attributes.position.array; for (let i = 0; i < L.n; i++) { curve.getPoint(i / (L.n - 1), v); arr[i * 3] = v.x; arr[i * 3 + 1] = v.y; arr[i * 3 + 2] = v.z; }
+      L.line.geometry.attributes.position.needsUpdate = true;
+      curve.getPoint((t * .35 + L.off) % 1, v); L.pk.position.copy(v);
+    });
+
+    renderer.render(scene, camera);
+    // project labels
+    const placed = []; const sr = sec.getBoundingClientRect(), hr0 = headEl.getBoundingClientRect(); const hb = { left: hr0.left - sr.left, right: hr0.right - sr.left, top: hr0.top - sr.top, bottom: hr0.bottom - sr.top };
+    ECO_ORDER.map(k => { const p = anchors[k]().project(camera); return { k, x: (p.x * .5 + .5) * W, y: (-p.y * .5 + .5) * H, z: p.z }; })
+      .sort((a, b) => a.y - b.y).forEach(o => {
+        const el = labels[o.k]; const w = el.offsetWidth || 200;
+        let y = o.y; for (let it = 0; it < 6; it++) { const hit = placed.find(q => Math.abs(q.x - o.x) < (q.w + w) / 2 + 6 && Math.abs(q.y - y) < 30); if (!hit) break; y = hit.y + 30; }
+        placed.push({ x: o.x, y, w });
+        el.classList.toggle('dim', o.x > hb.left - w / 2 && o.x < hb.right + w / 2 && y > hb.top && y < hb.bottom + 40);
+        el.style.transform = `translate(${o.x | 0}px,${y | 0}px) translate(-50%,-130%)`;
+        el.style.visibility = o.z < 1 ? 'visible' : 'hidden';
+      });
+  })(last);
+}
+/* =========================================================
+   Simulations
+   ========================================================= */
+const SXF = '"JetBrains Mono", ui-monospace, monospace';
+function sxGrid(g) { g.fillStyle = '#090a0d'; g.fillRect(0, 0, 1000, 620); g.strokeStyle = 'rgba(241,241,239,.035)'; g.lineWidth = 1; for (let x = 0; x <= 1000; x += 40) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, 620); g.stroke(); } for (let y = 0; y <= 620; y += 40) { g.beginPath(); g.moveTo(0, y); g.lineTo(1000, y); g.stroke(); } }
+function sxText(g, s, x, y, c = COL.A, sz = 11, al = 'left') { g.font = `${sz}px ${SXF}`; g.fillStyle = c; g.textAlign = al; g.fillText(s, x, y); g.textAlign = 'left'; }
+function sxGlow(g, x, y, r, hex, a) { const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, rgba(hex, a)); gr.addColorStop(1, rgba(hex, 0)); g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); }
+function sxPing(g, x, y, t, hex, R = 30) { for (let i = 0; i < 2; i++) { const q = (t * .8 + i * .5) % 1; g.strokeStyle = rgba(hex, 1 - q); g.lineWidth = 1.5; g.beginPath(); g.arc(x, y, 6 + q * R, 0, 7); g.stroke(); } g.fillStyle = hex; g.beginPath(); g.arc(x, y, 4.5, 0, 7); g.fill(); }
+function sxLabel(g, x, y, s, hex) { g.font = `10.5px ${SXF}`; const w = g.measureText(s).width + 14; if (x + w > 995) x = 995 - w; g.fillStyle = 'rgba(8,9,11,.88)'; g.fillRect(x, y - 13, w, 19); g.strokeStyle = hex; g.lineWidth = 1; g.strokeRect(x + .5, y - 12.5, w - 1, 18); g.fillStyle = hex; g.fillText(s, x + 7, y + 1); }
+function sxArrow(g, x1, y1, x2, y2, hex, w = 2) { g.strokeStyle = hex; g.fillStyle = hex; g.lineWidth = w; g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); g.stroke(); const a = Math.atan2(y2 - y1, x2 - x1); g.beginPath(); g.moveTo(x2, y2); g.lineTo(x2 - Math.cos(a - .45) * 10, y2 - Math.sin(a - .45) * 10); g.lineTo(x2 - Math.cos(a + .45) * 10, y2 - Math.sin(a + .45) * 10); g.closePath(); g.fill(); }
+function sxPath(g, pts, hex, w = 2, dash = null, off = 0) { g.strokeStyle = hex; g.lineWidth = w; g.setLineDash(dash || []); g.lineDashOffset = off; g.beginPath(); pts.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])); g.stroke(); g.setLineDash([]); }
+function along(pts, p) { let L = 0; const seg = []; for (let i = 1; i < pts.length; i++) { const l = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); seg.push(l); L += l; } let d = clamp(p, 0, 1) * L; for (let i = 0; i < seg.length; i++) { if (d <= seg[i]) { const q = d / seg[i]; return [lerp(pts[i][0], pts[i + 1][0], q), lerp(pts[i][1], pts[i + 1][1], q)]; } d -= seg[i]; } return pts[pts.length - 1]; }
+function sxDrone(g, x, y, t, hex = COL.W) { g.strokeStyle = hex; g.lineWidth = 2; g.beginPath(); g.moveTo(x - 9, y - 9); g.lineTo(x + 9, y + 9); g.moveTo(x + 9, y - 9); g.lineTo(x - 9, y + 9); g.stroke(); [[-9, -9], [9, 9], [9, -9], [-9, 9]].forEach(([a, b]) => { g.beginPath(); g.ellipse(x + a, y + b, 5, 2, t * 20, 0, 7); g.stroke(); }); g.fillStyle = Math.sin(t * 8) > 0 ? COL.I : COL.A; g.fillRect(x - 2, y - 2, 4, 4); }
+function sxFF(g, x, y, hex, label) { g.fillStyle = hex; g.beginPath(); g.arc(x, y, 6, 0, 7); g.fill(); g.strokeStyle = rgba(hex, .5); g.beginPath(); g.arc(x, y, 11, 0, 7); g.stroke(); if (label) sxText(g, label, x + 14, y + 4, hex, 11); }
+function sxFlames(g, x, y, w, h, t) { g.save(); g.globalCompositeOperation = 'lighter'; for (let i = 0; i < 26; i++) { const s = i * 7.31; const life = ((t * .6 + (s % 1)) % 1); const px = x + ((Math.sin(s) * .5 + .5) * w); const py = y + h - life * h * .9; const r = (1 - life) * 16; sxGlow(g, px, py, r + 4, life < .4 ? COL.I : COL.F, (1 - life) * .5); } g.restore(); }
+
+const SIMS = {
+  building: {
+    sit: 'Un immeuble de six étages est en feu. Trois personnes sont potentiellement piégées.',
+    steps: [
+      { t: 360, title: 'Arrivée des équipes', log: ['06:00 · Appel : feu au 2e étage, immeuble R+5', '06:10 · Deux engins sur place, échelle en approche', '06:20 · Trois personnes potentiellement piégées (selon les appelants)'], ai: "Positionner l'échelle côté façade est : accès direct aux étages 5 et 6.", hu: "Le chef d'agrès valide l'emplacement et lance la reconnaissance.", bn: "Un plan d'attaque proposé dès l'arrivée, à partir des données de l'appel." },
+      { t: 510, title: 'Scan thermique par drone', log: ['08:30 · Drone D-1 décolle — scan de la façade', '09:10 · Foyer confirmé : 2e étage, deux logements', '09:40 · Chaleur en hausse au 3e, au-dessus du foyer'], ai: 'Risque élevé de propagation verticale au 3e étage.', hu: "Le chef de groupe ordonne l'attaque du foyer et la protection du 3e.", bn: "Le foyer est localisé sans engager personne dans la fumée." },
+      { t: 600, title: 'Zones prioritaires', log: ['10:00 · Trois signatures thermiques compatibles avec des personnes', '10:05 · P1 : 3e étage — directement exposé', '10:05 · P2 : 5e étage · P3 : 6e étage, fenêtre est'], ai: 'Ordre suggéré : P1 → P2 → P3 (confiance moyenne, à confirmer).', hu: "Le commandant confirme, et traite P3 par l'échelle en parallèle.", bn: 'Des cibles de recherche, au lieu de fouiller six étages à l\'aveugle.' },
+      { t: 690, title: 'Analyse des plans', log: ['11:30 · Plans du bâtiment chargés', '11:40 · Escalier B enfumé à partir du 3e', '11:45 · Escalier A praticable, porte coupe-feu fermée'], ai: "Engager par l'escalier A ; ne pas ouvrir l'escalier B.", hu: "Le chef d'agrès vérifie l'escalier A de ses yeux avant d'engager.", bn: "Un itinéraire d'engagement plus sûr, vérifié par un humain." },
+      { t: 780, title: 'Suivi des pompiers', log: ['13:00 · Binôme B1 vers le 3e — O₂ 92 %', '13:10 · Binôme B2 vers le 5e — O₂ 95 %', '13:40 · Positions transmises au poste de commandement'], ai: 'Autonomie restante estimée pour B1 : 14 min.', hu: 'Le chef de secteur fixe un retour obligatoire à 10 min.', bn: 'Chaque pompier engagé reste visible sur la carte du commandement.' },
+      { t: 960, title: 'Coordination du sauvetage', log: ['15:20 · B1 : victime P1 prise en charge', "16:00 · Échelle : P3 évacuée par la fenêtre", '16:40 · B2 : P2 localisée et évacuée'], ai: 'Toutes les cibles détectées sont traitées.', hu: "Le commandant ordonne une fouille complète : le capteur a pu manquer quelqu'un.", bn: "Trois sauvetages en parallèle — et une fouille humaine qui ne s'arrête pas à l'algorithme." }
+    ],
+    draw(g, s, k, t) {
+      sxGrid(g);
+      const bx = 300, by = 74, bw = 360, fh = 72, gy = by + 6 * fh; const fy = f => by + (6 - f) * fh; const rw = bw / 4;
+      g.fillStyle = '#0d0e11'; g.fillRect(0, gy, 1000, 620 - gy); sxPath(g, [[0, gy], [1000, gy]], rgba(COL.A, .5), 1);
+      // thermal
+      for (let f = 1; f <= 6; f++) for (let r = 0; r < 4; r++) {
+        const x = bx + r * rw, y = fy(f);
+        if (s >= 1) {
+          const scanned = s > 1 || (y + fh / 2) > gy - k * 6 * fh;
+          if (scanned) { const d = Math.abs(f - 2) * 1 + Math.abs(r - 1.5) * .55; const h = clamp(1 - d / 3.4, 0, 1); g.fillStyle = h > .62 ? rgba(COL.R, .32) : h > .35 ? rgba(COL.F, .22) : h > .15 ? rgba(COL.I, .1) : 'rgba(133,139,148,.04)'; g.fillRect(x + 1, y + 1, rw - 2, fh - 2); }
+        }
+        g.strokeStyle = 'rgba(133,139,148,.35)'; g.lineWidth = 1; g.strokeRect(x + .5, y + .5, rw, fh);
+      }
+      g.strokeStyle = rgba(COL.W, .7); g.lineWidth = 2; g.strokeRect(bx, by, bw, 6 * fh);
+      for (let f = 1; f <= 6; f++) sxText(g, 'R+' + (f - 1), bx - 40, fy(f) + fh / 2 + 4, COL.A, 10);
+      // fire
+      [1, 2].forEach(r => { sxGlow(g, bx + r * rw + rw / 2, fy(2) + fh / 2, 60, COL.F, .5); sxFlames(g, bx + r * rw + 6, fy(2) + 6, rw - 12, fh - 10, t + r); });
+      // stairs
+      const sA = bx + 6, sB = bx + bw - 28;
+      [sA, sB].forEach(x => { for (let f = 1; f <= 6; f++) { const y = fy(f); sxPath(g, [[x, y + fh - 4], [x + 22, y + fh / 2], [x, y + 6]], 'rgba(133,139,148,.4)', 1); } });
+      // smoke in stair B
+      for (let f = 3; f <= 6; f++) { const y = fy(f); g.fillStyle = `rgba(133,139,148,${.18 + .08 * Math.sin(t * 2 + f)})`; g.fillRect(sB - 4, y + 2, 32, fh - 4); }
+      // trucks
+      const tx = s === 0 ? lerp(-140, 120, ease(k)) : 120, lx = s === 0 ? lerp(1120, 720, ease(k)) : 720;
+      [[tx, 'FPT'], [lx, 'EPA']].forEach(([x, n], i) => { g.fillStyle = '#7a1712'; g.fillRect(x, gy - 30, 110, 28); g.fillStyle = Math.sin(t * 10 + i) > 0 ? COL.R : COL.W; g.fillRect(x + 10, gy - 36, 26, 6); sxText(g, n, x + 40, gy - 12, COL.W, 11); });
+      // drone
+      if (s >= 1) {
+        const dy = s === 1 ? lerp(gy - 30, by + 10, k) : by - 26 + Math.sin(t) * 6; const dx = 700 + Math.sin(t * 1.3) * 6;
+        if (s === 1) { g.strokeStyle = rgba(COL.I, .8); g.lineWidth = 1.5; g.beginPath(); g.moveTo(dx, dy); g.lineTo(bx + bw, dy - 30); g.lineTo(bx + bw, dy + 30); g.closePath(); g.stroke(); g.fillStyle = rgba(COL.I, .08); g.fill(); sxPath(g, [[bx, dy], [bx + bw, dy]], rgba(COL.I, .9), 1.5); }
+        sxDrone(g, dx, dy, t); sxText(g, 'D-1 · THERMIQUE', dx + 16, dy - 12, COL.I, 10);
+      }
+      // victims
+      const V = [[bx + rw * 1.5, fy(3) + fh / 2, 'P1'], [bx + rw * .6, fy(5) + fh / 2, 'P2'], [bx + rw * 3.4, fy(6) + fh / 2, 'P3']];
+      if (s >= 2) V.forEach(([x, y, n], i) => { const saved = s === 5 && k > [.2, .7, .45][i]; if (saved) { sxText(g, '✓ ' + n, x - 10, y + 4, COL.W, 13); return; } sxPing(g, x, y, t + i * .3, COL.W, 22); if (s === 2) sxLabel(g, x + 18, y - 10, n + ' · À CONFIRMER', COL.W); else sxText(g, n, x + 12, y - 8, COL.W, 11); });
+      // plans
+      if (s >= 3) { g.strokeStyle = COL.W; g.lineWidth = 2; g.strokeRect(sA - 3, by, 30, 6 * fh); sxLabel(g, 24, by + 40, 'ESCALIER A · PRATICABLE', COL.W); sxPath(g, [[170, by + 36], [sA - 3, by + 60]], COL.W, 1); g.strokeStyle = COL.R; g.lineWidth = 3; g.beginPath(); g.moveTo(sB - 2, fy(4)); g.lineTo(sB + 26, fy(4) + fh); g.moveTo(sB + 26, fy(4)); g.lineTo(sB - 2, fy(4) + fh); g.stroke(); sxLabel(g, bx + bw + 30, fy(4) + 30, 'ESCALIER B · ENFUMÉ', COL.R); }
+      // teams
+      if (s >= 4) {
+        const p = s === 4 ? ease(k) : 1;
+        const P1 = [[sA + 11, gy], [sA + 11, fy(3) + fh - 10], [V[0][0] - 22, fy(3) + fh - 10]], P2 = [[sA + 11, gy], [sA + 11, fy(5) + fh - 10], [V[1][0] + 20, fy(5) + fh - 10]];
+        sxPath(g, P1, rgba(COL.I, .6), 1.5, [4, 4], -t * 20); sxPath(g, P2, rgba(COL.I, .6), 1.5, [4, 4], -t * 20);
+        const a = along(P1, p), b = along(P2, clamp(p * 1.1 - .1, 0, 1)); sxFF(g, a[0], a[1], COL.I, 'B1'); sxFF(g, b[0], b[1], COL.I, 'B2');
+        [['B1 · O₂', .92 - p * .1], ['B2 · O₂', .95 - p * .08]].forEach(([n, v], i) => { const x = 24, y = 220 + i * 26; sxText(g, n, x, y, COL.A, 10); g.fillStyle = 'rgba(241,241,239,.1)'; g.fillRect(x + 64, y - 8, 120, 8); g.fillStyle = COL.I; g.fillRect(x + 64, y - 8, 120 * v, 8); });
+      }
+      if (s >= 5) { const L = clamp(k * 2, 0, 1); const x0 = 760, y0 = gy - 34, x1 = bx + bw + 4, y1 = fy(6) + fh / 2; sxPath(g, [[x0, y0], [lerp(x0, x1, L), lerp(y0, y1, L)]], COL.W, 4); sxText(g, 'ÉCHELLE → P3', 790, fy(6) + 30, COL.W, 11); }
+    }
+  },
+  forest: {
+    sit: "Un incendie progresse vers un village (fictif, 640 habitants) sous l'effet de vents violents.",
+    steps: [
+      { t: 0, title: 'Détection satellitaire', log: ['00:00 · Anomalie thermique signalée par satellite', '00:03 · Confirmée par une caméra de crête', '00:05 · Opérateur : départ de feu validé'], ai: 'Probabilité de feu actif élevée. Engager une reconnaissance.', hu: "L'opérateur confirme sur l'image et déclenche l'alerte.", bn: "Une alerte possible avant l'appel du premier témoin." },
+      { t: 720, title: 'Analyse météorologique', log: ['00:12 · Vent NE 55 km/h, rafales 80 km/h', "00:12 · Humidité de l'air : 14 %", '00:14 · Vent orienté vers le village'], ai: 'Conditions de propagation rapide. Prévenir le village maintenant.', hu: 'Le commandant demande la préalerte de la mairie.', bn: "Les habitants gagnent du temps avant l'ordre d'évacuation." },
+      { t: 1200, title: 'Prédiction de propagation', log: ['00:20 · Modèle de propagation : trois projections', '00:21 · Lisière du village atteinte entre +2 h et +3 h', '00:21 · Incertitude élevée : sautes de feu possibles'], ai: 'Village menacé à +2 h (marge ± 45 min).', hu: "Le commandant retient l'hypothèse la plus pessimiste.", bn: "Décider avec une fourchette, pas avec une fausse certitude." },
+      { t: 2100, title: 'Observations des drones', log: ['00:35 · Drone D-3 suit le front de flammes', '00:41 · Saute de feu à 600 m devant le front', '00:42 · Projection recalculée : +1 h 40'], ai: "Le front accélère. Avancer l'évacuation.", hu: "Le commandant envoie un engin sur la saute de feu et confirme l'évacuation.", bn: "La projection est corrigée par l'observation réelle — pas l'inverse." },
+      { t: 2700, title: 'Zones menacées', log: ['00:45 · Secteur nord : exposition forte', '00:45 · Secteur est : exposition moyenne', '00:46 · Secteur sud : exposition faible'], ai: 'Évacuer nord et est en priorité ; sud en préalerte.', hu: "Le maire et le commandant valident l'ordre par secteur.", bn: 'Des départs étalés : moins de saturation sur les routes.' },
+      { t: 3000, title: "Recommandations d'évacuation", log: ['00:50 · Route est menacée à +2 h — à éviter', '00:51 · Message ciblé : secteurs nord et est', '01:30 · Secteurs prioritaires évacués'], ai: 'Itinéraire conseillé : route nord-ouest. Point de regroupement : gymnase.', hu: 'Les gendarmes ferment la route est. Les pompiers défendent la lisière.', bn: 'Un message court, ciblé, avec un itinéraire.' }
+    ],
+    draw(g, s, k, t) {
+      g.fillStyle = '#0a0c0d'; g.fillRect(0, 0, 1000, 620);
+      g.strokeStyle = 'rgba(133,139,148,.09)'; g.lineWidth = 1;
+      for (let i = 0; i < 18; i++) { g.beginPath(); for (let x = 0; x <= 1000; x += 10) { const y = i * 38 + Math.sin(x * .008 + i * .7) * 22 + Math.sin(x * .02 + i) * 6; x ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke(); }
+      const O = [780, 150], dir = [-.72, .69];
+      const RN = [[200, 440], [110, 280], [60, 40]], RE = [[240, 470], [520, 520], [1000, 560]], RS = [[190, 500], [200, 620]];
+      [RN, RE, RS].forEach(r => sxPath(g, r, 'rgba(133,139,148,.55)', 3));
+      for (let i = 0; i < 5; i++) for (let j = 0; j < 4; j++) { g.fillStyle = '#20242b'; g.fillRect(150 + i * 20, 440 + j * 18, 12, 11); }
+      sxText(g, 'VILLAGE (FICTIF)', 140, 528, COL.W, 11);
+      // fire blob
+      const R = 22 + s * 24 + k * 24; const cx = O[0] + dir[0] * R * .5, cy = O[1] + dir[1] * R * .5;
+      g.save(); g.translate(cx, cy); g.rotate(Math.atan2(dir[1], dir[0]));
+      g.beginPath(); for (let a = 0; a <= 6.3; a += .2) { const rr = R * (1 + .15 * Math.sin(a * 5 + t)); const x = Math.cos(a) * rr * 1.25, y = Math.sin(a) * rr * .7; a ? g.lineTo(x, y) : g.moveTo(x, y); }
+      g.closePath(); const fg = g.createRadialGradient(0, 0, 0, 0, 0, R * 1.3); fg.addColorStop(0, rgba(COL.I, .9)); fg.addColorStop(.7, rgba(COL.F, .55)); fg.addColorStop(1, rgba(COL.R, .15)); g.fillStyle = fg; g.fill(); g.restore();
+      sxFlames(g, cx - R * .6, cy - R * .5, R * 1.2, R * .8, t);
+      if (s === 0) { sxPing(g, O[0], O[1], t, COL.I, 40); sxPath(g, [[920, 40], O], rgba(COL.I, .7), 1, [4, 6], -t * 30); g.strokeStyle = COL.W; g.strokeRect(910, 30, 20, 14); sxPath(g, [[892, 37], [948, 37]], COL.A, 3); sxLabel(g, 560, 70, 'SATELLITE · ANOMALIE THERMIQUE', COL.I); }
+      if (s >= 1) {
+        for (let i = 0; i < 7; i++) for (let j = 0; j < 5; j++) { const ph = (t * .4 + i * .13 + j * .07) % 1; const x = 380 + i * 90 + dir[0] * ph * 40, y = 40 + j * 100 + dir[1] * ph * 40; g.globalAlpha = Math.sin(ph * Math.PI) * .55; sxArrow(g, x, y, x + dir[0] * 26, y + dir[1] * 26, COL.A, 1.2); g.globalAlpha = 1; }
+        sxLabel(g, 24, 70, 'VENT NE · 55 KM/H · RAFALES 80', COL.W); sxLabel(g, 24, 96, 'HUMIDITÉ 14 % · VALEURS SIMULÉES', COL.A);
+      }
+      if (s >= 2) [[80, 1], [170, 2], [260, 3]].forEach(([d, h], i) => { const ex = O[0] + dir[0] * d, ey = O[1] + dir[1] * d; const vis = s > 2 || k > i * .3; if (!vis) return; g.save(); g.translate(ex, ey); g.rotate(Math.atan2(dir[1], dir[0])); g.setLineDash([6, 6]); g.strokeStyle = rgba(COL.F, .85); g.lineWidth = 1.5; g.beginPath(); g.ellipse(0, 0, 60 + d * .5, 40 + d * .28, 0, 0, 7); g.stroke(); g.setLineDash([]); g.restore(); sxText(g, '+' + h + ' H', ex + 40, ey - 30, COL.F, 11); });
+      if (s >= 3) { const sp = [O[0] + dir[0] * 200, O[1] + dir[1] * 200]; const a = t * .5; sxDrone(g, cx + Math.cos(a) * (R + 40), cy + Math.sin(a) * (R + 30), t); sxGlow(g, sp[0], sp[1], 18, COL.F, .8); sxPing(g, sp[0], sp[1], t, COL.F, 26); sxLabel(g, sp[0] + 20, sp[1] - 16, 'SAUTE DE FEU · DRONE D-3', COL.F); }
+      if (s >= 4) { const vc = [190, 470]; [[-Math.PI * .75, -Math.PI * .1, COL.R, 'NORD · FORT'], [-Math.PI * .1, Math.PI * .35, COL.I, 'EST · MOYEN'], [Math.PI * .35, Math.PI * 1.25, COL.A, 'SUD · FAIBLE']].forEach(([a0, a1, c, n]) => { g.fillStyle = rgba(c, .14); g.strokeStyle = c; g.lineWidth = 1.5; g.beginPath(); g.moveTo(vc[0], vc[1]); g.arc(vc[0], vc[1], 90, a0, a1); g.closePath(); g.fill(); g.stroke(); const am = (a0 + a1) / 2; sxText(g, n, vc[0] + Math.cos(am) * 110 - 30, vc[1] + Math.sin(am) * 100, c, 10); }); }
+      if (s >= 5) { sxPath(g, RN, COL.W, 5); for (let i = 0; i < 4; i++) { const p = along(RN, ((t * .12 + i * .25) % 1)); g.fillStyle = COL.W; g.fillRect(p[0] - 3, p[1] - 3, 6, 6); } sxLabel(g, 120, 160, 'ÉVACUATION CONSEILLÉE', COL.W); const x = 520, y = 520; g.strokeStyle = COL.R; g.lineWidth = 4; g.beginPath(); g.moveTo(x - 12, y - 12); g.lineTo(x + 12, y + 12); g.moveTo(x + 12, y - 12); g.lineTo(x - 12, y + 12); g.stroke(); sxLabel(g, 540, 500, 'ROUTE EST · MENACÉE À +2 H', COL.R); }
+    }
+  },
+  chem: {
+    sit: "Une explosion sur un site industriel (fictif) provoque une possible fuite chimique. Un quartier résidentiel se trouve à l'est.",
+    steps: [
+      { t: 0, title: 'Capteurs chimiques', log: ['00:00 · Explosion — réservoir T4', "00:01 · Capteurs C2, C3 : seuil d'alerte gaz dépassé", '00:02 · Capteur C5 hors ligne (endommagé)'], ai: 'Fuite probable. Nature du produit à confirmer.', hu: 'Le commandant impose un périmètre réflexe et le port des protections.', bn: 'Des mesures dès la première minute, avant même l\'arrivée des équipes.' },
+      { t: 540, title: 'Drones équipés de capteurs', log: ['00:09 · Drone D-4 décolle, cap sous le vent', '00:12 · Concentration élevée à 300 m du site', '00:14 · Concentration faible à 1 km'], ai: "Le nuage se déplace vers l'est.", hu: "Le commandant interdit tout accès par l'est.", bn: 'Mesurer sans exposer de personnel.' },
+      { t: 900, title: 'Conditions météorologiques', log: ["00:15 · Vent d'ouest, 18 km/h", '00:15 · Atmosphère stable : faible dispersion verticale', '00:16 · Pas de pluie annoncée'], ai: 'Dispersion lente : le nuage reste concentré près du sol.', hu: 'Le commandant demande des mesures dans le quartier.', bn: 'Comprendre pourquoi le nuage se comporte ainsi.' },
+      { t: 1200, title: 'Cartographie des risques', log: ['00:20 · Modèle de dispersion lancé', '00:22 · Panache projeté vers le quartier résidentiel', '00:22 · Incertitude : nature exacte du produit inconnue'], ai: 'Zone à risque : environ 1,8 km sous le vent (estimation).', hu: 'La cellule risques chimiques compare avec ses propres méthodes.', bn: 'Deux approches indépendantes qui se contrôlent.' },
+      { t: 1680, title: "Zones d'exclusion", log: ["00:28 · Zone d'exclusion : 600 m autour du site", '00:29 · Zone de confinement : quartier est', '00:30 · Message : « Restez chez vous, fermez les fenêtres »'], ai: "Confinement préférable à l'évacuation dans le panache.", hu: 'Le préfet valide le confinement sur proposition du commandant.', bn: "Ne pas envoyer d'habitants à travers le nuage." },
+      { t: 2100, title: 'Recommandations aux équipes', log: ["00:35 · Équipe spécialisée : approche par l'ouest", '00:38 · Tenues de protection adaptées confirmées', '00:52 · Fuite colmatée — mesures en baisse'], ai: "Approcher au vent ; décontamination à l'ouest.", hu: "Le chef de l'équipe spécialisée décide de l'approche finale sur place.", bn: 'Des équipes engagées au bon endroit, avec la bonne protection.' }
+    ],
+    draw(g, s, k, t) {
+      sxGrid(g);
+      g.strokeStyle = 'rgba(241,241,239,.5)'; g.lineWidth = 1.5; g.setLineDash([8, 6]); g.strokeRect(110, 140, 460, 360); g.setLineDash([]);
+      sxText(g, 'SITE INDUSTRIEL (FICTIF)', 110, 128, COL.A, 10);
+      [[140, 170, 90, 50], [140, 360, 120, 60], [300, 400, 100, 70], [460, 180, 80, 70]].forEach(([x, y, w, h]) => { g.fillStyle = '#16191e'; g.fillRect(x, y, w, h); });
+      const T = [[200, 260, 'T1'], [260, 260, 'T2'], [320, 260, 'T3'], [420, 310, 'T4'], [490, 310, 'T5'], [200, 470, 'T6']];
+      T.forEach(([x, y, n]) => { g.strokeStyle = n === 'T4' ? COL.R : 'rgba(133,139,148,.7)'; g.lineWidth = 1.5; g.beginPath(); g.arc(x, y, 22, 0, 7); g.stroke(); sxText(g, n, x - 8, y + 4, n === 'T4' ? COL.R : COL.A, 10); });
+      for (let i = 0; i < 8; i++) for (let j = 0; j < 9; j++) { g.fillStyle = '#1d2129'; g.fillRect(720 + i * 30, 120 + j * 44, 18, 26); }
+      sxText(g, 'QUARTIER RÉSIDENTIEL', 720, 104, COL.W, 11);
+      const E = [420, 310], dir = [1, .12];
+      // explosion
+      if (s === 0) { const r = ease(k) * 160; g.strokeStyle = rgba(COL.F, 1 - k); g.lineWidth = 3; g.beginPath(); g.arc(E[0], E[1], r, 0, 7); g.stroke(); }
+      sxGlow(g, E[0], E[1], 50, COL.F, .6); sxFlames(g, E[0] - 20, E[1] - 30, 40, 30, t);
+      // plume
+      const plumeAmt = s < 3 ? (s >= 1 ? .35 : .15) : (s === 3 ? .35 + k * .65 : 1);
+      for (let i = 0; i < 34; i++) { const q = i / 34; if (q > plumeAmt) break; const x = E[0] + dir[0] * q * 520, y = E[1] + dir[1] * q * 520 + Math.sin(t + i) * 3; g.fillStyle = rgba(COL.I, .09 * (1 - q * .6)); g.beginPath(); g.ellipse(x, y, 20 + q * 90, 12 + q * 50, Math.atan2(dir[1], dir[0]), 0, 7); g.fill(); }
+      // sensors
+      const S = [[300, 330, 'C1'], [470, 340, 'C2'], [520, 290, 'C3'], [380, 200, 'C4'], [450, 420, 'C5'], [240, 330, 'C6'], [620, 330, 'C7'], [600, 230, 'C8']];
+      S.forEach(([x, y, n], i) => { let st = 'ok'; if (n === 'C5') st = 'off'; else { const dx = x - E[0], dy = y - E[1]; const al = dx * dir[0] + dy * dir[1], perp = Math.abs(-dx * dir[1] + dy * dir[0]); if (al > 10 && perp < 30 + al * .2 && al < 80 + plumeAmt * 500) st = 'hot'; } const c = st === 'hot' ? COL.R : st === 'off' ? COL.A : COL.W; g.fillStyle = c; g.fillRect(x - 4, y - 4, 8, 8); if (st === 'hot') sxPing(g, x, y, t + i * .2, COL.R, 14); sxText(g, n + (st === 'off' ? ' ✕' : ''), x + 8, y - 6, c, 10); });
+      if (s >= 1) { const p = s === 1 ? k : 1; const pts = [[E[0] + 40, E[1] - 60], [600, 300], [760, 330], [900, 340]]; sxPath(g, pts, rgba(COL.W, .4), 1, [3, 5]); const d = along(pts, p); sxDrone(g, d[0], d[1], t); [[.25, 'ÉLEVÉE'], [.55, 'MOYENNE'], [.9, 'FAIBLE']].forEach(([q, v]) => { if (p < q) return; const m = along(pts, q); g.fillStyle = COL.W; g.beginPath(); g.arc(m[0], m[1] + 18, 3, 0, 7); g.fill(); sxText(g, v, m[0] - 20, m[1] + 36, COL.W, 9.5); }); }
+      if (s >= 2) { for (let j = 0; j < 4; j++) { const ph = (t * .3 + j * .25) % 1; sxArrow(g, 30 + ph * 60, 200 + j * 70, 60 + ph * 60, 200 + j * 70 + 4, rgba(COL.A, Math.sin(ph * Math.PI)), 1.5); } sxLabel(g, 24, 70, "VENT D'OUEST · 18 KM/H", COL.W); sxLabel(g, 24, 96, 'ATMOSPHÈRE STABLE · SIMULÉ', COL.A); }
+      if (s >= 4) { g.save(); g.translate(E[0] + 120, E[1] + 14); g.rotate(Math.atan2(dir[1], dir[0])); g.fillStyle = rgba(COL.R, .08); g.strokeStyle = COL.R; g.lineWidth = 2; g.beginPath(); g.ellipse(0, 0, 200, 80, 0, 0, 7); g.fill(); g.stroke(); g.setLineDash([8, 6]); g.strokeStyle = COL.I; g.beginPath(); g.ellipse(160, 10, 420, 150, 0, 0, 7); g.stroke(); g.setLineDash([]); g.restore(); sxLabel(g, 470, 420, "ZONE D'EXCLUSION", COL.R); sxLabel(g, 760, 560, 'CONFINEMENT', COL.I); }
+      if (s >= 5) { const p = ease(k); sxArrow(g, 20, 300, lerp(30, 150, p), 302, COL.W, 3); sxLabel(g, 20, 270, 'ÉQUIPE SPÉCIALISÉE · AU VENT', COL.W); }
+    }
+  },
+  mayday: {
+    sit: 'Un pompier (F3) ne répond plus aux appels radio dans un entrepôt enfumé.',
+    steps: [
+      { t: 0, title: 'Alerte automatique', log: ['00:00 · Balise F3 : immobilité détectée (30 s)', '00:00 · Alarme transmise au poste de commandement', '00:05 · Aucune réponse radio de F3'], ai: 'Détresse probable : F3.', hu: 'Le chef de secteur déclenche la procédure « pompier en détresse ».', bn: "L'alerte n'attend pas qu'on remarque l'absence." },
+      { t: 10, title: 'Dernière position', log: ['00:10 · Dernière position estimée : zone nord-est', '00:10 · Précision : ± 4 m (localisation intérieure)', '00:11 · Dernier mouvement il y a 48 s'], ai: 'Zone de recherche : environ 50 m² autour de la dernière position.', hu: 'Le commandant retient la zone et demande une confirmation visuelle.', bn: 'Chercher dans 50 m², pas dans tout le bâtiment.' },
+      { t: 20, title: 'Équipes proches', log: ['00:20 · F1 à 23 m — en action sur un foyer', "00:20 · Équipe de sauvetage dédiée prête à l'entrée", '00:22 · Air restant estimé pour F3 : ~11 min'], ai: "Engager l'équipe de sauvetage ; F1 tient sa position.", hu: "Le chef de secteur engage l'équipe de sauvetage et garde F1 sur le foyer.", bn: 'Secourir sans affaiblir la ligne de lances.' },
+      { t: 30, title: 'Assistance du robot', log: ['00:30 · Robot R-1 entre par le couloir central', '00:44 · Signature thermique compatible dans la zone', '00:45 · Opérateur : silhouette au sol confirmée'], ai: 'Position affinée à ± 1 m.', hu: "L'opérateur confirme à l'image avant tout guidage.", bn: 'Le robot ouvre la voie dans la fumée sans exposer personne.' },
+      { t: 50, title: 'Coordination', log: ["00:50 · Itinéraire transmis à l'équipe de sauvetage", '00:51 · Ventilation coupée côté nord', '00:52 · Sortie : porte sud-ouest'], ai: 'Itinéraire praticable le plus court : 34 m.', hu: "Le chef d'équipe suit l'itinéraire, la main toujours sur le mur.", bn: 'Une route claire, sans renoncer aux techniques de base.' },
+      { t: 150, title: 'Sauvetage', log: ['01:40 · F3 atteint — conscient, coincé par un effondrement', '02:30 · F3 extrait par la porte sud-ouest', '02:35 · Prise en charge médicale'], ai: 'Compte nominatif de tous les engagés recommandé.', hu: "Le commandant fait l'appel de tous les binômes avant de réengager.", bn: "Des minutes gagnées quand l'air est compté." }
+    ],
+    draw(g, s, k, t) {
+      sxGrid(g);
+      g.strokeStyle = 'rgba(241,241,239,.75)'; g.lineWidth = 3; g.strokeRect(120, 80, 760, 480);
+      g.lineWidth = 2; g.strokeStyle = 'rgba(241,241,239,.45)';
+      [[120, 300, 280, 300], [320, 300, 460, 300], [500, 300, 640, 300], [680, 300, 880, 300], [120, 360, 180, 360], [220, 360, 460, 360], [500, 360, 880, 360], [300, 80, 300, 300], [480, 80, 480, 300], [660, 80, 660, 300], [400, 360, 400, 560], [640, 360, 640, 560]].forEach(([a, b, c, d]) => { g.beginPath(); g.moveTo(a, b); g.lineTo(c, d); g.stroke(); });
+      g.fillStyle = '#090a0d'; g.fillRect(150, 556, 40, 8); sxText(g, 'ENTRÉE', 140, 584, COL.A, 10); sxText(g, 'ENTREPÔT (FICTIF)', 120, 66, COL.A, 10);
+      const sm = g.createRadialGradient(760, 180, 10, 760, 180, 340); sm.addColorStop(0, 'rgba(133,139,148,.32)'); sm.addColorStop(1, 'rgba(133,139,148,0)'); g.fillStyle = sm; g.fillRect(120, 80, 760, 480);
+      sxGlow(g, 560, 450, 70, COL.F, .45); sxFlames(g, 520, 410, 80, 70, t);
+      const ent = [170, 560], c1 = [200, 330];
+      const P = { F1: [ent, c1, [390, 330], [390, 200]], F2: [ent, c1, [570, 330], [570, 440]], F3: [ent, c1, [750, 330], [760, 180]], F4: [ent, c1, [220, 450]] };
+      Object.entries(P).forEach(([n, p]) => { sxPath(g, p, n === 'F3' ? rgba(COL.R, .45) : 'rgba(241,241,239,.25)', 1.5, [3, 5]); const e = p[p.length - 1]; if (n === 'F3') return; sxFF(g, e[0], e[1], COL.I, n); });
+      const L = [760, 180];
+      const blink = Math.sin(t * 8) > 0;
+      if (!(s === 5 && k > .5)) { g.fillStyle = blink ? COL.R : '#5a1412'; g.beginPath(); g.arc(L[0], L[1], 8, 0, 7); g.fill(); sxPing(g, L[0], L[1], t, COL.R, 26); sxText(g, 'F3', L[0] + 14, L[1] - 10, COL.R, 12); }
+      if (s === 0) sxLabel(g, 330, 40, 'ALERTE AUTOMATIQUE · F3 IMMOBILE 30 S', COL.R);
+      if (s >= 1) { g.setLineDash([5, 5]); g.strokeStyle = COL.R; g.lineWidth = 1.5; g.beginPath(); g.arc(L[0], L[1], s >= 3 && (s > 3 || k > .8) ? 16 : 48, 0, 7); g.stroke(); g.setLineDash([]); if (s < 3) sxLabel(g, 560, 120, 'DERNIÈRE POSITION · ± 4 M', COL.R); }
+      const RIT = [180, 520];
+      if (s >= 2) { sxFF(g, RIT[0], RIT[1], COL.W, 'ÉQUIPE DE SAUVETAGE'); if (s === 2) [[P.F1[3], 'F1 · 23 M'], [RIT, 'SAUVETAGE · 62 M']].forEach(([p, n]) => { sxPath(g, [p, L], rgba(COL.W, .5), 1, [2, 4]); sxText(g, n, (p[0] + L[0]) / 2 + 6, (p[1] + L[1]) / 2 - 6, COL.W, 10); }); }
+      const route = [ent, c1, [740, 330], [760, 196]];
+      if (s >= 3) { const p = s === 3 ? ease(k) : 1; const r = along(route, p); g.fillStyle = COL.I; g.fillRect(r[0] - 7, r[1] - 5, 14, 10); const a = Math.atan2(L[1] - r[1], L[0] - r[0]); g.fillStyle = rgba(COL.I, .12); g.beginPath(); g.moveTo(r[0], r[1]); g.arc(r[0], r[1], 90, a - .4, a + .4); g.closePath(); g.fill(); sxText(g, 'R-1', r[0] - 10, r[1] + 22, COL.I, 10); if (s > 3 || k > .8) sxLabel(g, 520, 120, 'SIGNATURE CONFIRMÉE PAR OPÉRATEUR', COL.I); }
+      if (s >= 4) { sxPath(g, route, COL.W, 3, s === 4 ? [10, 6] : null, -t * 40); sxLabel(g, 560, 400 - 60, 'ITINÉRAIRE · 34 M', COL.W); sxText(g, 'TIENT LE FOYER', 330, 236, COL.I, 10); }
+      if (s >= 5) { const go = k < .5 ? k * 2 : 2 - k * 2; const r = along(route, ease(go)); sxFF(g, r[0], r[1], COL.W, k > .5 ? 'SAUVETAGE + F3' : 'SAUVETAGE'); if (k > .9) sxLabel(g, 220, 600 - 10, 'F3 EXTRAIT · PRISE EN CHARGE', COL.W); }
+    }
+  }
+};
+
+function initSim() {
+  const cv = $('#simCanvas'), g = cv.getContext('2d');
+  const tabs = $$('#simTabs button'), stepsEl = $('#simSteps'), feed = $('#simFeed');
+  const st = { id: 'building', s: 0, k: 0, play: false, vis: false, auto: false };
+  const fmt = sec => { sec = Math.max(0, Math.round(sec)); return 'T+' + String(sec / 60 | 0).padStart(2, '0') + ':' + String(sec % 60).padStart(2, '0'); };
+  const D = Math.min(devicePixelRatio || 1, 2);
+  const size = () => { const r = cv.getBoundingClientRect(); cv.width = r.width * D; cv.height = r.height * D; };
+  const playBtn = $('#simPlay');
+  const setPlay = p => { st.play = p; playBtn.textContent = p ? '❚❚ Pause' : '▶ Lecture'; playBtn.setAttribute('aria-label', p ? 'Pause' : 'Lecture'); };
+  const renderText = (append) => {
+    const S = SIMS[st.id], step = S.steps[st.s];
+    $('#simSit').innerHTML = '<span class="mono" style="color:var(--incan)">Situation — </span>' + S.sit;
+    $('#simStepN').textContent = `Étape ${st.s + 1} / ${S.steps.length}`; $('#simStepT').textContent = step.title;
+    $('#simAI').textContent = step.ai; $('#simHU').textContent = step.hu; $('#simBN').textContent = step.bn;
+    if (!append) { feed.innerHTML = ''; for (let i = 0; i <= st.s; i++) S.steps[i].log.forEach(l => addLine(l, i === 0 && st.id === 'mayday')); }
+    else step.log.forEach(l => addLine(l, false));
+    feed.scrollTop = feed.scrollHeight;
+    $$('button', stepsEl).forEach((b, i) => { b.classList.toggle('done', i < st.s); b.classList.toggle('cur', i === st.s); b.style.setProperty('--p', i < st.s ? '100%' : '0%'); });
+  };
+  const addLine = (l, alert) => { const [ts, ...rest] = l.split(' · '); const d = document.createElement('div'); if (alert || /alerte|détresse|immobilité|explosion/i.test(l)) d.className = 'alert'; d.innerHTML = `<b>${ts}</b> · ${rest.join(' · ')}`; feed.appendChild(d); };
+  const buildSteps = () => { stepsEl.innerHTML = ''; SIMS[st.id].steps.forEach((s, i) => { const b = document.createElement('button'); b.textContent = String(i + 1).padStart(2, '0') + ' ' + s.title; b.addEventListener('click', () => { setStep(i); setPlay(false); }); stepsEl.appendChild(b); }); };
+  const setStep = (i, append) => { st.s = clamp(i, 0, SIMS[st.id].steps.length - 1); st.k = RM ? 1 : 0; renderText(append); };
+  const setSimId = id => { st.id = id; tabs.forEach(t => t.setAttribute('aria-selected', t.dataset.sim === id)); buildSteps(); setStep(0); };
+  tabs.forEach(t => t.addEventListener('click', () => { setSimId(t.dataset.sim); setPlay(!RM); }));
+  $('#simPrev').addEventListener('click', () => { setPlay(false); setStep(st.s - 1); });
+  $('#simNext').addEventListener('click', () => { setPlay(false); setStep(st.s + 1); });
+  playBtn.addEventListener('click', () => { if (!st.play && st.s === SIMS[st.id].steps.length - 1 && st.k >= 1) setStep(0); setPlay(!st.play); });
+  setSimId('building');
+  new IntersectionObserver(es => { st.vis = es[0].isIntersecting; if (st.vis) { size(); if (!st.auto && !RM) { st.auto = true; setPlay(true); } } }, { threshold: .35 }).observe(cv);
+  addEventListener('resize', size);
+  let t = 0, last = performance.now();
+  (function loop(now) {
+    requestAnimationFrame(loop);
+    const dt = Math.min(.05, (now - last) / 1000); last = now; if (!st.vis) return;
+    t += dt;
+    const steps = SIMS[st.id].steps;
+    if (st.play) { st.k += dt / 5.2; if (st.k >= 1) { if (st.s < steps.length - 1) setStep(st.s + 1, true); else { st.k = 1; setPlay(false); } } }
+    else if (st.k < 1 && !RM) st.k = Math.min(1, st.k + dt / 2.5);
+    const cur = $$('button', stepsEl)[st.s]; if (cur) cur.style.setProperty('--p', (st.k * 100).toFixed(1) + '%');
+    const a = steps[st.s].t, b = steps[Math.min(st.s + 1, steps.length - 1)].t;
+    $('#simClock').textContent = fmt(lerp(a, b > a ? b : a, st.k));
+    g.setTransform(cv.width / 1000, 0, 0, cv.height / 620, 0, 0);
+    SIMS[st.id].draw(g, st.s, st.k, t);
+  })(last);
+}
+
+/* ---------- degraded mode demo ---------- */
+function initDegraded() {
+  const btn = $('#degBtn'), hud = $('#minihud'); let timer = null, s = 0;
+  btn.addEventListener('click', () => {
+    const off = btn.getAttribute('aria-pressed') !== 'true';
+    btn.setAttribute('aria-pressed', off); hud.classList.toggle('off', off);
+    btn.textContent = off ? 'Rétablir la connectivité' : 'Simuler une perte de connectivité';
+    clearInterval(timer); s = 0; $$('[data-stale] span', hud).forEach(x => x.textContent = '0');
+    if (off) timer = setInterval(() => { s++; $$('[data-stale] span', hud).forEach(x => x.textContent = s); }, 1000);
+  });
+}
+
+/* ---------- boot ---------- */
+function boot() {
+  try { initHero(); } catch (e) { console.error(e); }
+  try { initScroll(); } catch (e) { console.error(e); }
+  try { initMissionArt(); } catch (e) { console.error(e); }
+  try { initCases(); } catch (e) { console.error(e); }
+  try { initEco(); } catch (e) { console.error(e); }
+  try { initSim(); } catch (e) { console.error(e); }
+  try { initDegraded(); } catch (e) { console.error(e); }
+  runLoader(heroIntro);
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+</script>
+</body></html>
